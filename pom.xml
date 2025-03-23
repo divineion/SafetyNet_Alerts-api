@@ -28,11 +28,23 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			 <exclusions>
+		        <exclusion>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-logging</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
 
 		<dependency>
@@ -47,6 +59,35 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			
+			<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			
+			<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+			<plugin>
+			    <groupId>org.jacoco</groupId>
+			    <artifactId>jacoco-maven-plugin</artifactId>
+			    <version>${jacoco-maven-plugin.version}</version>
+			    <executions>
+			    	<execution>
+						<!--preparer l'agent jacoco pr la collecte des donnees de couverture pendant les tests-->
+			    	<id>default-prepare-agent</id>
+			    		<goals>
+			    			<goal>prepare-agent</goal>
+			    		</goals>
+			    	</execution>
+			    	<execution>
+			    	<id>default-report</id>
+			    	<phase>verify</phase>
+			    		<goals>
+			    			<goal>report</goal>
+			    		</goals>
+			    	</execution>
+			    </executions>
 			</plugin>
 		</plugins>
 	</build>
