@@ -20,5 +20,8 @@
     	<Logger name="com.safetynet.safetynetalertsapi.repositories" additivity="true">
     		<AppenderRef ref="REQUESTS_LOG"/>
     	</Logger>
+    	    	<Logger name="com.safetynet.safetynetalertsapi.controllers" additivity="true">
+    		<AppenderRef ref="REQUESTS_LOG"/>
+    	</Logger>
     </Loggers>
 </Configuration>
