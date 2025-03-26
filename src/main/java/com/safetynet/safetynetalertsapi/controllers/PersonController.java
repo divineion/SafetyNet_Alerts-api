@@ -23,10 +23,9 @@ public class PersonController {
 	
 	// Temporary endpoint to test data fetching
 	// TODO remove or modify before production
-	// TODO change logger messages
 	@GetMapping("/testfetchdata")
 	public ResponseEntity<Map<String, Object>> testDataFetching() {
-		logger.debug("Request received");
+		logger.debug("GET request received for /testfetchdata endpoint");
 		Map<String, Object> data = finder.processQuery();
 		logger.info("Data has been fetched successfully");
 		return ResponseEntity.ok(data);
