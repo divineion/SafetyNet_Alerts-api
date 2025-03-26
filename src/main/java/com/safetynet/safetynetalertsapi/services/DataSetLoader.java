@@ -1,5 +1,9 @@
 package com.safetynet.safetynetalertsapi.services;
 
+import java.util.Map;
+
 public interface DataSetLoader {
-	public void loadData();
+	void loadData();
+	
+	Map<String, Object> getDataSet();
 }

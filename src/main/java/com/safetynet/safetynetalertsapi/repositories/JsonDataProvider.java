@@ -7,15 +7,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
-import com.safetynet.safetynetalertsapi.services.JsonDataSetLoader;
+import com.safetynet.safetynetalertsapi.services.DataSetLoader;
 
 @Repository
 public class JsonDataProvider implements DataProvider {
 	private static final Logger logger = LogManager.getLogger(JsonDataProvider.class);
 	
 	@Autowired
-	private JsonDataSetLoader dataSetLoader;
+	private DataSetLoader dataSetLoader;
 	
 	
 	public Map<String,Object> getAllData() {
