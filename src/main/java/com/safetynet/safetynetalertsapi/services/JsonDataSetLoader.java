@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.annotation.PostConstruct;
 /**
- * Loads data from file
- * 
+ * <p>This class is responsible for loading a data set from a JSON file.</p>
+ * <p>On application startup, the {@link #loadData()} method is automatically
+ *  executed thanks to the {@link PostConstruct} annotation.</p>
  * 
  */
 @Service
@@ -36,18 +39,23 @@ public class JsonDataSetLoader implements DataSetLoader {
 	public void setDataSet(Map<String, Object> dataSet) {
 		this.dataSet = dataSet;
 	}
-
-	// TODO Voir annotation @PostConstruct
+	
+	/**
+	 *<p>This method loads the dataset from a JSON file located in the classpath, performing
+	 *the following steps:</p>
+	 *<ul>
+	 *	<li>Uses {@link ResourceLoader} to retrieve the file from the classpath.</li>
+	 *	<li>Uses {@link ObjectMapper} to deserialize its content into a {@link Map}.</li>
+	 *	<li>Stores the resulting data in the {@code dataSet} field.</li>
+	 *</ul> 
+	 */
+	@PostConstruct
 	public void loadData() {
 		logger.debug("Loading dataset file");
 		try {
-			//  chemin relatif au  resources DIR 
-			// mvn clean package pour rebuild en incluant le fichier dans le jar
-			// TODO stocker path dans env variable
 			Resource dataResource = resourceLoader.getResource("classpath:/database/data.json");
 			InputStream datasetInputStream = dataResource.getInputStream();
 			
-			// mapper le fichier
 			Map<String, Object> map = objectMapper.readValue(datasetInputStream,
 					new TypeReference<Map<String, Object>>() {});
 			
