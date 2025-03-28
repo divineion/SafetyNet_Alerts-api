@@ -10,26 +10,20 @@ import java.util.List;
  */
 
 public class MedicalRecord {    
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
-    List<String> allergies;
-    List<String> medications;
+    private Identity identity;
     
-	public String getFirstName() {
-		return firstName;
+    private LocalDate birthDate;
+    
+    private List<String> allergies;
+    
+    private List<String> medications;
+    
+	public Identity getIdentity() {
+		return identity;
 	}
 	
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	
-	public String getLastName() {
-		return lastName;
-	}
-	
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setIdentity(Identity identity) {
+		this.identity = identity;
 	}
 	
 	public LocalDate getBirthDate() {
@@ -59,8 +53,8 @@ public class MedicalRecord {
 	@Override
 	public String toString() {
 		return 
-		"firstName: " + firstName
-		 + "\n lastName: " + this.lastName
+		"firstName: " + this.identity.getFirstName()
+		 + "\n lastName: " + this.identity.getLastName()
 		 + "\n birthDate: " + this.birthDate
 		 + "\n allergies: " + this.allergies
 		 + "\n medication: " + this.medications;

@@ -11,64 +11,28 @@ package com.safetynet.safetynetalertsapi.model;
  * 
  */
 public class Person {
-	private String firstName;
-	private String lastName;
-	private String address;
-	private String city;
-	private String zip;
+	private Identity identity;
+	
+	private Address address;
+	
 	private String phone;
+	
 	private String email;
-	
-	public Person(String firstName, String lastName, String address, String city, String zip, String phone,
-			String email) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.address = address;
-		this.city = city;
-		this.zip = zip;
-		this.phone = phone;
-		this.email = email;
-	}
 
-	public String getFirstName() {
-		return firstName;
+	public Identity getIdentity() {
+		return identity;
 	}
 	
-	
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setIdentity(Identity identity) {
+		this.identity = identity;
 	}
 	
-	public String getLastName() {
-		return lastName;
-	}
-	
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 	
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
-	}
-	
-	public String getCity() {
-		return city;
-	}
-	
-	public void setCity(String city) {
-		this.city = city;
-	}
-	
-	public String getZip() {
-		return zip;
-	}
-	
-	public void setZip(String zip) {
-		this.zip = zip;
 	}
 	
 	public String getPhone() {
@@ -87,12 +51,10 @@ public class Person {
 		this.email = email;
 	}
 	
+	@Override
 	public String toString() {
-		return "firstname: " + this.firstName 
-		+ "\n lastname: " + this.lastName
-		+ "\n address: " + this.address  
-		+ "\n city: " + this.city
-		+ "\n zip: " + this.zip 
+		return this.identity
+		+ "\n" + this.address 
 		+ "\n phone: " + this.phone 
 		+ "\n email: " + this.email; 
 	}
