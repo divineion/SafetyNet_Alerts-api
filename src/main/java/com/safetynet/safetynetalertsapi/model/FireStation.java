@@ -12,7 +12,6 @@ package com.safetynet.safetynetalertsapi.model;
  * - station: the identification number of the fire station
  */
 public class FireStation {
-	
 	private String address;
 	
 	private int station;
