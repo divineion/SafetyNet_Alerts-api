@@ -1,6 +1,8 @@
 package com.safetynet.safetynetalertsapi.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * This class represents a person in the SafetyNet Alerts system.
@@ -10,13 +12,17 @@ package com.safetynet.safetynetalertsapi.model;
  * and email address. This class is used to store and manage contact details for individuals in the system.
  * 
  */
-public class Person {
+public class Person {	
+	@JsonUnwrapped
 	private Identity identity;
 	
+	@JsonUnwrapped
 	private Address address;
 	
+	@JsonProperty("phone")
 	private String phone;
 	
+	@JsonProperty("email")
 	private String email;
 
 	public Identity getIdentity() {

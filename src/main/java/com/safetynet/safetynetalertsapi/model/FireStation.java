@@ -1,5 +1,7 @@
 package com.safetynet.safetynetalertsapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Represents a fire station in the SafetyNet Alerts system.
  * 
@@ -12,8 +14,10 @@ package com.safetynet.safetynetalertsapi.model;
  * - station: the identification number of the fire station
  */
 public class FireStation {
+	@JsonProperty("address")
 	private String address;
 	
+	@JsonProperty("station")
 	private int station;
 	
 	public int getStation() {
