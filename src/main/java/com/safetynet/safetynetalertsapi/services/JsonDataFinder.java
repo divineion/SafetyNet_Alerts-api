@@ -1,13 +1,12 @@
 package com.safetynet.safetynetalertsapi.services;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.safetynet.safetynetalertsapi.model.DataSet;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
 
 @Service
@@ -18,11 +17,12 @@ public class JsonDataFinder implements DataFinder {
 	@Autowired
 	JsonDataProvider dataProvider;
 		
-	public Map<String, Object> processQuery() {
+	public DataSet processQuery() {
 		try {
 			logger.debug("Processing query");
-			Map<String, Object> data =  dataProvider.getAllData();
-		return data;
+			DataSet dataSet =  dataProvider.getAllData();
+						
+			return dataSet;
 		} catch(Exception e) {
 			logger.error("An error occured while processing query : ", e);
 			

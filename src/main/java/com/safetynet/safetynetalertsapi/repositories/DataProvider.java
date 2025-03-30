@@ -1,8 +1,10 @@
 package com.safetynet.safetynetalertsapi.repositories;
 
-import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.safetynet.safetynetalertsapi.model.DataSet;
 
 public interface DataProvider {
-	public Map <String, Object> getAllData();
+	public DataSet getAllData() throws JsonProcessingException;
 
 }

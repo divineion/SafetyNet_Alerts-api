@@ -10,8 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.safetynetalertsapi.model.DataSet;
 
 import jakarta.annotation.PostConstruct;
 /**
@@ -30,13 +30,13 @@ public class JsonDataSetLoader implements DataSetLoader {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private Map<String, Object> dataSet;
+	private DataSet dataSet;
 	
-	public Map<String, Object> getDataSet() {
+	public DataSet getDataSet() {
 		return dataSet;
 	}
 
-	public void setDataSet(Map<String, Object> dataSet) {
+	public void setDataSet(DataSet dataSet) {
 		this.dataSet = dataSet;
 	}
 	
@@ -56,14 +56,14 @@ public class JsonDataSetLoader implements DataSetLoader {
 			Resource dataResource = resourceLoader.getResource("classpath:/database/data.json");
 			InputStream datasetInputStream = dataResource.getInputStream();
 			
-			Map<String, Object> map = objectMapper.readValue(datasetInputStream,
-					new TypeReference<Map<String, Object>>() {});
+			DataSet dataSet = objectMapper.readValue(datasetInputStream,
+					DataSet.class);
 			
-			this.setDataSet(map);
+			this.setDataSet(dataSet);
 			
 			logger.info("File has been successfully loaded");
 		} catch (Exception e) {
-				logger.error("An error occurred while loading dataset");
+				logger.error("An error occurred while loading dataset \n" + e);
 		}
 	}
 }	
