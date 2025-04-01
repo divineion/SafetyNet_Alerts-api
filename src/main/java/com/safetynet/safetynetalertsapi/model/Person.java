@@ -60,9 +60,9 @@ public class Person {
 	@Override
 	public String toString() {
 		return this.identity
-		+ "\n" + this.address 
-		+ "\n phone: " + this.phone 
-		+ "\n email: " + this.email; 
+		+ " " + this.address 
+		+ " " + this.phone 
+		+ " " + this.email; 
 	}
 }
 

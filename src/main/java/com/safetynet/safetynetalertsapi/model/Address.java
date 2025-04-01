@@ -35,8 +35,6 @@ public class Address {
 	}
 	
 	public String toString() {
-		return "address: " + this.street +
-				"\n city: " + this.city +
-				"\n zip: " + this.zip;
+		return this.street + " " + this.city + " " + this.zip;
 	}
 }

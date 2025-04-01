@@ -1,5 +1,8 @@
 package com.safetynet.safetynetalertsapi.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Identity {
 	private String firstName;
 	
@@ -23,8 +26,7 @@ public class Identity {
 	
 	@Override
 	public String toString() {
-		return "firstname : " + this.firstName
-				+ " \n lastname : " + this.lastName;
+		return this.firstName + " " + this.lastName;
 		
 	}
 }
