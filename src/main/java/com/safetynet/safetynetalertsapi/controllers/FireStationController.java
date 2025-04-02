@@ -27,14 +27,8 @@ public class FireStationController {
 		List<FireStationDTO> fireStations = finder.getAllFireStations();
 		
 		return ResponseEntity.ok(fireStations);
-		
 	}
 	
-	//Cette url doit retourner une liste des personnes couvertes par la caserne de pompiers
-	//correspondante. Donc, si le numéro de station = 1, elle doit renvoyer les habitants
-	//couverts par la station numéro 1. La liste doit inclure les informations spécifiques
-	//suivantes : prénom, nom, adresse, numéro de téléphone. De plus, elle doit fournir un
-	//moins) dans la zone desservie.
 	@GetMapping("/firestation/{stationNumber}")
 	public ResponseEntity<FireStationCoverageDTO> getPersonsCoveredByStation(@PathVariable int stationNumber) {
 		FireStationCoverageDTO fireStationcoverage = finder.getFireStationCoverage(stationNumber);

@@ -20,7 +20,6 @@ public class MedicalRecordFinder {
 	JsonDataProvider provider;
 	
 	public List<MedicalRecord> findAll() {
-		// TODO Auto-generated method stub
 		List<MedicalRecord> medicalRecords = provider.findAllMedicalRecords();
 		
 		return medicalRecords;
