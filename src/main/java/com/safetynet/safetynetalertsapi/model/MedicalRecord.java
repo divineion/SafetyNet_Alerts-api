@@ -62,10 +62,9 @@ public class MedicalRecord implements Identifiable {
 	@Override
 	public String toString() {
 		return 
-		"firstName: " + this.identity.getFirstName()
-		 + "\n lastName: " + this.identity.getLastName()
-		 + "\n birthDate: " + this.birthDate
-		 + "\n allergies: " + this.allergies
-		 + "\n medication: " + this.medications;
+		 this.identity.toString()
+		 + " " + this.birthDate
+		 + " " + this.allergies
+		 + " " + this.medications;
 	}
 }

@@ -63,12 +63,11 @@ public class PersonController {
 		return ResponseEntity.ok(data);
 	}
 	
-	@GetMapping("/children/{address}")
+	@GetMapping("/childalert/{address}")
 	public ResponseEntity<List<ChildDTO>> getAllChildrenByAddress(@PathVariable String address) {
 		logger.debug("Searching for all children living at " + address);
 		try {
 			List<ChildDTO> data = personFinder.findAllChildrenByAddress(address.trim());
-			
 			return ResponseEntity.ok(data);
 		} catch(Exception e) {
 			logger.error("An error occurred while processing the request" + e);

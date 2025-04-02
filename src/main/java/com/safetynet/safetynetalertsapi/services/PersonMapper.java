@@ -28,6 +28,5 @@ public class PersonMapper {
 		FamilyMemberDTO memberDTO = new FamilyMemberDTO(member.getIdentity());
 		
 		return memberDTO;
-		
 	}
 }
