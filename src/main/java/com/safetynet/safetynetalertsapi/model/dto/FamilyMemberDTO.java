@@ -1,9 +1,10 @@
 package com.safetynet.safetynetalertsapi.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.safetynet.safetynetalertsapi.model.Identifiable;
 import com.safetynet.safetynetalertsapi.model.Identity;
 
-public class FamilyMemberDTO {
+public class FamilyMemberDTO implements Identifiable {
 	@JsonUnwrapped
 	private Identity identity;
 	

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * and email address. This class is used to store and manage contact details for individuals in the system.
  * 
  */
-public class Person {	
+public class Person implements Identifiable {	
 	@JsonUnwrapped
 	private Identity identity;
 	
