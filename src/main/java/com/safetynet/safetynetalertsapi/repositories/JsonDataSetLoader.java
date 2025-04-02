@@ -1,4 +1,4 @@
-package com.safetynet.safetynetalertsapi.services;
+package com.safetynet.safetynetalertsapi.repositories;
 
 import java.io.InputStream;
 import java.util.Map;

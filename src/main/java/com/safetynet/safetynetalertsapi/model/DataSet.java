@@ -9,10 +9,10 @@ public class DataSet {
 	private List<Person> persons;
 	
 	@JsonProperty("firestations")
-	private List<FireStation> firestations;
+	private List<FireStation> fireStations;
 	
 	@JsonProperty("medicalrecords")
-	private List<MedicalRecord> medicalrecords;
+	private List<MedicalRecord> medicalRecords;
 
 	public List<Person> getPersons() {
 		return persons;
@@ -22,19 +22,19 @@ public class DataSet {
 		this.persons = persons;
 	}
 
-	public List<FireStation> getFirestations() {
-		return firestations;
+	public List<FireStation> getFireStations() {
+		return fireStations;
 	}
 
-	public void setFirestations(List<FireStation> firestations) {
-		this.firestations = firestations;
+	public void setFireStations(List<FireStation> firestations) {
+		this.fireStations = firestations;
 	}
 
-	public List<MedicalRecord> getMedicalrecords() {
-		return medicalrecords;
+	public List<MedicalRecord> getMedicalRecords() {
+		return medicalRecords;
 	}
 
-	public void setMedicalrecords(List<MedicalRecord> medicalrecords) {
-		this.medicalrecords = medicalrecords;
+	public void setMedicalrecords(List<MedicalRecord> medicalRecords) {
+		this.medicalRecords = medicalRecords;
 	}
 }

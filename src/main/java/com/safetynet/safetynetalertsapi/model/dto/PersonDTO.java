@@ -1,29 +1,26 @@
-package com.safetynet.safetynetalertsapi.model;
+package com.safetynet.safetynetalertsapi.model.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.safetynet.safetynetalertsapi.model.Address;
+import com.safetynet.safetynetalertsapi.model.Identity;
 
-/**
- * This class represents a person in the SafetyNet Alerts system.
- * It contains the personal information of individuals.
- * 
- * The information includes the person's name, address, city, zip code, phone number,
- * and email address. This class is used to store and manage contact details for individuals in the system.
- * 
- */
-public class Person {	
+public class PersonDTO {
 	@JsonUnwrapped
 	private Identity identity;
 	
 	@JsonUnwrapped
 	private Address address;
 	
-	@JsonProperty("phone")
 	private String phone;
 	
-	@JsonProperty("email")
 	private String email;
+	
+    public PersonDTO(Identity identity, Address address, String phone, String email) {
+    	this.identity = identity;
+    	this.address = address;
+    	this.phone = phone;
+    	this.email = email;
+	}
 
 	public Identity getIdentity() {
 		return identity;
@@ -65,4 +62,3 @@ public class Person {
 		+ " " + this.email; 
 	}
 }
-
