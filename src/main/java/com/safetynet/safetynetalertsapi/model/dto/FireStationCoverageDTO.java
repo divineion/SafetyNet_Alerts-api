@@ -9,12 +9,12 @@ public class FireStationCoverageDTO {
 	private List<CoveredPersonDTO> coveredPersonsDTO;
 	
 	@JsonProperty("adults")
-	int adultsCounter;
+	long adultsCounter;
 	
 	@JsonProperty("children")
 	long childrenCounter;
 	
-	public FireStationCoverageDTO(List<CoveredPersonDTO> coveredPersonsDTO, int adultsCounter, long children) {
+	public FireStationCoverageDTO(List<CoveredPersonDTO> coveredPersonsDTO, long adultsCounter, long children) {
 		this.coveredPersonsDTO = coveredPersonsDTO;
 		this.adultsCounter = adultsCounter;
 		this.childrenCounter = children;
@@ -28,11 +28,11 @@ public class FireStationCoverageDTO {
 		this.coveredPersonsDTO = coveredPersonsDTO;
 	}
 
-	public int getAdultsCounter() {
+	public long getAdultsCounter() {
 		return adultsCounter;
 	}
 
-	public void setAdultsCounter(int adultsCounter) {
+	public void setAdultsCounter(long adultsCounter) {
 		this.adultsCounter = adultsCounter;
 	}
 
