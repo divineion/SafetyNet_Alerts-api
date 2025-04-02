@@ -31,6 +31,9 @@ public class PersonFinder {
 
 	@Autowired
 	PersonMapper personMapper;
+	
+	@Autowired
+	PersonFilterService filterService;
 
 	public List<PersonDTO> findAll() {
 		List<Person> persons = dataProvider.findAllPersons();
@@ -58,13 +61,35 @@ public class PersonFinder {
 		return emailList;
 	}
 
-	public List<FamilyMemberDTO> findAllPersonsByAddress(String address) {
+	/**
+	 * This method retrieves all persons living at a given address
+	 * 
+	 * @see PersonDTO
+	 * 
+	 * @param address
+	 * @return a List of PersonDTO
+	 */
+	public List<PersonDTO> findAllPersonsByAddress(String address) {
+		System.out.println("addresse comparée : " + address);
 		// Filtrer les personnes par adresse
 		List<PersonDTO> houseHoldMembers = findAll().stream()
 				// la méthode filter attend un boolean
-				.filter(person -> person.getAddress().toString().replace(" ", "").equalsIgnoreCase(address))
+				.filter(person -> person.getAddress().getStreet().toString().replace(" ", "").equalsIgnoreCase(address))
 				.collect(Collectors.toList());
 
+		return houseHoldMembers;
+	}
+	
+	/**
+	 *This method uses the findAllPersonsByAddress() method and returns a List of FamilyMembersDTO
+	 *
+	 * @see FamilyMemberDTO
+	 *
+	 * @param address
+	 * @return a List of FamilyMembersDTO
+	 */
+	public List<FamilyMemberDTO> findHouseHoldMembersByAddress(String address) {
+		List<PersonDTO> houseHoldMembers = findAllPersonsByAddress(address);
 		List<FamilyMemberDTO> members = houseHoldMembers.stream().map(personMapper::fromPersonToFamilyMemberDTO)
 				.collect(Collectors.toList());
 
@@ -74,22 +99,15 @@ public class PersonFinder {
 	}
 
 	public List<ChildDTO> findAllChildrenByAddress(String address) {
-		List<FamilyMemberDTO> houseHoldMembers = findAllPersonsByAddress(address);
-
-//			// Définir la limite d'âge (18 ans ou moins)
-		LocalDate limitDate = LocalDate.now().minusYears(19).plusDays(1);
+		List<FamilyMemberDTO> houseHoldMembers = findHouseHoldMembersByAddress(address);
 //			
 //			// Filtrer les enfants parmi les personnes trouvéees à l'adresse : 
 //			// 	1 : rechercher les dossiers médicaux correspondant aux personnes à l'adresse
 			// 	et vérifier si la date de naissance est après la limite
-		List<ChildDTO> children = houseHoldMembers.stream().filter(member -> {
-			Identity identity = member.getIdentity();
-			MedicalRecord medicalRecord = medicalRecordFinder.findByIdentity(identity);
-
-			return medicalRecord != null && medicalRecord.getBirthDate().isAfter(limitDate);
-		})
+		List<FamilyMemberDTO> childrenList = filterService.filterChildren(houseHoldMembers);
 
 //			// 2 : créer les DTO pour les enfants
+		List<ChildDTO> children = childrenList.stream()
 				.map(member -> {
 					Identity identity = member.getIdentity();
 					MedicalRecord medicalRecord = medicalRecordFinder.findByIdentity(identity);

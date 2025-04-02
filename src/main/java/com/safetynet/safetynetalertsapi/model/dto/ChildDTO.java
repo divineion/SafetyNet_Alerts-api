@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.safetynet.safetynetalertsapi.model.Identifiable;
 import com.safetynet.safetynetalertsapi.model.Identity;
 
-public class ChildDTO {
+public class ChildDTO implements Identifiable {
 	@JsonUnwrapped
 	private Identity identity;
 	

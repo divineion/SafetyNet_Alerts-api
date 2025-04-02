@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * allergies, and medications. 
  */
 
-public class MedicalRecord { 
+public class MedicalRecord implements Identifiable { 
 	@JsonUnwrapped
     private Identity identity;
     
