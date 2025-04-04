@@ -13,8 +13,7 @@ import com.safetynet.safetynetalertsapi.model.dto.CoveredPhoneDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
-import com.safetynet.safetynetalertsapi.services.PersonFilterService;
-import com.safetynet.safetynetalertsapi.services.PersonFinder;
+import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
 import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
 

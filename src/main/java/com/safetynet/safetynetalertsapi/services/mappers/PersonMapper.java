@@ -1,4 +1,4 @@
-package com.safetynet.safetynetalertsapi.services;
+package com.safetynet.safetynetalertsapi.services.mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;

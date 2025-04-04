@@ -1,4 +1,4 @@
-package com.safetynet.safetynetalertsapi.services;
+package com.safetynet.safetynetalertsapi.services.finders;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -17,6 +17,8 @@ import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FamilyMemberDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
+import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
+import com.safetynet.safetynetalertsapi.services.mappers.PersonMapper;
 
 @Service
 public class PersonFinder {

@@ -1,4 +1,4 @@
-package com.safetynet.safetynetalertsapi.services;
+package com.safetynet.safetynetalertsapi.services.finders;
 
 import java.util.List;
 
