@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import com.safetynet.safetynetalertsapi.exceptions.StationNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
 import com.safetynet.safetynetalertsapi.model.dto.CoveredPersonDTO;
+import com.safetynet.safetynetalertsapi.model.dto.AlertPersonInfoDTO;
 import com.safetynet.safetynetalertsapi.model.dto.CoveredPhoneDTO;
+import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
+import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
@@ -123,5 +126,20 @@ public class FireStationFinder {
 		.collect(Collectors.toList());
 		
 		return new CoveredPhoneDTO(stationNumber, coveredPhones);
+	}
+
+	public FireAlertDTO getAllResidentsByAddress(String address) {
+		List<PersonDTO> persons = personFinder.findAllPersonsByAddress(address);
+		
+		int stationNumber = getAllFireStations()
+				.stream()
+				.filter(fs -> fs.getAddress().replace(" ", "").equalsIgnoreCase(address))
+				.findAny()
+				.orElse(null)
+				.getStation();
+		
+		List<AlertPersonInfoDTO> residents = mapper.fromPersonDTOtoAlertPersonInfoDTO(persons);
+		
+		return new FireAlertDTO(stationNumber, residents);
 	}
 }
