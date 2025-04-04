@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.safetynetalertsapi.exceptions.StationNotFoundException;
 import com.safetynet.safetynetalertsapi.model.dto.CoveredPhoneDTO;
+import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 import com.safetynet.safetynetalertsapi.services.finders.FireStationFinder;
@@ -51,5 +52,11 @@ public class FireStationController {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatusCode.valueOf(404)).body(null);
 		}
+	}
+	
+	@GetMapping("/fire/{address}")
+	public ResponseEntity<FireAlertDTO> getFireAlertInfoByAddress(@PathVariable String address) {
+		FireAlertDTO fire = finder.getAllResidentsByAddress(address);
+		return ResponseEntity.ok(fire);
 	}
 }
