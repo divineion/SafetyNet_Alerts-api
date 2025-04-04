@@ -14,7 +14,7 @@ import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
-import com.safetynet.safetynetalertsapi.services.PersonFinder;
+import com.safetynet.safetynetalertsapi.services.finders.PersonFinder;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

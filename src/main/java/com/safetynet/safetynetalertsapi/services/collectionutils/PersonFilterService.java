@@ -1,4 +1,4 @@
-package com.safetynet.safetynetalertsapi.services;
+package com.safetynet.safetynetalertsapi.services.collectionutils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.safetynet.safetynetalertsapi.model.Identifiable;
 import com.safetynet.safetynetalertsapi.model.Identity;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
+import com.safetynet.safetynetalertsapi.services.finders.MedicalRecordFinder;
 
 @Service
 public class PersonFilterService {
