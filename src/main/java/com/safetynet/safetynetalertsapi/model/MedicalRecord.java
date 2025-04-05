@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
@@ -16,8 +17,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 public class MedicalRecord implements Identifiable { 
 	@JsonUnwrapped
     private Identity identity;
-    
-	@JsonProperty("birthdate")
+	
+	@JsonProperty(value="birthdate", access = Access.WRITE_ONLY)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     private LocalDate birthDate;
     

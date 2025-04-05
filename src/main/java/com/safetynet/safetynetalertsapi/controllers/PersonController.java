@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safetynet.safetynetalertsapi.model.DataSet;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
-import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
+import com.safetynet.safetynetalertsapi.model.dto.PersonInfoDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
 import com.safetynet.safetynetalertsapi.services.finders.PersonFinder;
 
@@ -38,19 +38,19 @@ public class PersonController {
 	}
 	
 	@GetMapping("/persons")
-	public ResponseEntity<List<PersonDTO>> getAllPersons() throws JsonProcessingException {
+	public ResponseEntity<List<Person>> getAllPersons() throws JsonProcessingException {
 			logger.debug("GET request received for /persons endpoint");
 			
-			List<PersonDTO> data = personFinder.findAll();
+			List<Person> data = personFinder.findAll();
 			
 			logger.info("Data have been fetched successfully");
 			return ResponseEntity.ok(data);		
 	}
 	
 	@GetMapping("/personinfolastname/{lastName}")
-	public ResponseEntity<List<PersonDTO>> getPersonByLastName(@PathVariable String lastName) {
+	public ResponseEntity<List<PersonInfoDTO>> getPersonByLastName(@PathVariable String lastName) {
 			logger.debug("Searching for persons named "+ lastName);
-			List<PersonDTO> data = personFinder.findBy(lastName);
+			List<PersonInfoDTO> data = personFinder.findBy(lastName);
 			
 			return ResponseEntity.ok(data);
 	}

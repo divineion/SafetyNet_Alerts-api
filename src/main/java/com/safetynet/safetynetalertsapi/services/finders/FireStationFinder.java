@@ -3,18 +3,19 @@ package com.safetynet.safetynetalertsapi.services.finders;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.safetynetalertsapi.exceptions.StationNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
+import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.CoveredPersonDTO;
 import com.safetynet.safetynetalertsapi.model.dto.AlertPersonInfoDTO;
-import com.safetynet.safetynetalertsapi.model.dto.CoveredPhoneDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
-import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
@@ -36,6 +37,8 @@ public class FireStationFinder {
 
 	@Autowired
 	private PersonFilterService filterService;
+	
+	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
 
 	public List<FireStationDTO> getAllFireStations() {
 		List<FireStation> fireStations = provider.findAllFireStations();
@@ -114,7 +117,7 @@ public class FireStationFinder {
 	 * unique phone numbers of covered persons
 	 * @throws StationNotFoundException 
 	 */
-	public CoveredPhoneDTO getCoveredPhone(int stationNumber) throws StationNotFoundException {
+	public List<String> getCoveredPhone(int stationNumber) throws StationNotFoundException {
 		if (!validator.stationExists(stationNumber)) {
 			throw new StationNotFoundException("Station number " + stationNumber + " not found");
 		}
@@ -125,11 +128,11 @@ public class FireStationFinder {
 		.distinct()
 		.collect(Collectors.toList());
 		
-		return new CoveredPhoneDTO(stationNumber, coveredPhones);
+		return coveredPhones;
 	}
 
 	public FireAlertDTO getAllResidentsByAddress(String address) {
-		List<PersonDTO> persons = personFinder.findAllPersonsByAddress(address);
+		List<Person> persons = personFinder.findAllPersonsByAddress(address);
 		
 		int stationNumber = getAllFireStations()
 				.stream()
