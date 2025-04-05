@@ -15,7 +15,7 @@ import com.safetynet.safetynetalertsapi.model.MedicalRecord;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FamilyMemberDTO;
-import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
+import com.safetynet.safetynetalertsapi.model.dto.PersonInfoDTO;
 import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.PersonMapper;
@@ -37,27 +37,27 @@ public class PersonFinder {
 	@Autowired
 	PersonFilterService filterService;
 
-	public List<PersonDTO> findAll() {
-		List<Person> persons = dataProvider.findAllPersons();
-
-		return personMapper.fromPersonsToPersonsDTO(persons);
+	public List<Person> findAll() {
+		List<Person> data = dataProvider.findAllPersons();
+		
+		return data;
 	}
 
-	public List<PersonDTO> findBy(String lastName) {
-		List<PersonDTO> persons = findAll().stream()
-				// la méthode filter attend un boolean
-				.filter(p -> p.getIdentity().getLastName().equalsIgnoreCase(lastName)).collect(Collectors.toList());
+	public List<PersonInfoDTO> findBy(String lastName) {
+		List<Person> persons = findAll().stream().filter(p -> p.getIdentity().getLastName().equalsIgnoreCase(lastName)).collect(Collectors.toList());
+		
+		List<PersonInfoDTO> personDTOList = personMapper.fromPersonsToPersonsInfoDTO(persons);
 
 		logger.info("Found records with name" + lastName + ": " + persons);
 
-		return persons;
+		return personDTOList;
 	}
 
 	public List<String> findAllEmail(String city) {
-		List<PersonDTO> persons = findAll();
+		List<Person> persons = findAll();
 		List<String> emailList = new ArrayList<String>();
 
-		for (PersonDTO person : persons) {
+		for (Person person : persons) {
 			emailList.add(person.getEmail());
 		}
 		return emailList;
@@ -66,17 +66,17 @@ public class PersonFinder {
 	/**
 	 * This method retrieves all persons living at a given address
 	 * 
-	 * @see PersonDTO
+	 * @see Person
 	 * 
 	 * @param address
-	 * @return a List of PersonDTO
+	 * @return a List of Person
 	 */
-	public List<PersonDTO> findAllPersonsByAddress(String address) {
-		System.out.println("addresse comparée : " + address);
+	public List<Person> findAllPersonsByAddress(String address) {
+		logger.debug("addresse comparée : " + address);
 		// Filtrer les personnes par adresse
-		List<PersonDTO> houseHoldMembers = findAll().stream()
+		List<Person> houseHoldMembers = findAll().stream()
 				// la méthode filter attend un boolean
-				.filter(person -> person.getAddress().getStreet().toString().replace(" ", "").equalsIgnoreCase(address))
+				.filter(person -> person.getAddress().getStreet().replace(" ", "").equalsIgnoreCase(address))
 				.collect(Collectors.toList());
 
 		return houseHoldMembers;
@@ -91,7 +91,7 @@ public class PersonFinder {
 	 * @return a List of FamilyMembersDTO
 	 */
 	public List<FamilyMemberDTO> findHouseHoldMembersByAddress(String address) {
-		List<PersonDTO> houseHoldMembers = findAllPersonsByAddress(address);
+		List<Person> houseHoldMembers = findAllPersonsByAddress(address);
 		List<FamilyMemberDTO> members = houseHoldMembers.stream().map(personMapper::fromPersonToFamilyMemberDTO)
 				.collect(Collectors.toList());
 

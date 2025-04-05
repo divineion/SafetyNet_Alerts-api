@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safetynet.safetynetalertsapi.exceptions.StationNotFoundException;
-import com.safetynet.safetynetalertsapi.model.dto.CoveredPhoneDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
@@ -41,11 +40,11 @@ public class FireStationController {
 	}
 	
 	@GetMapping("/phonealert/{stationNumber}")
-	public ResponseEntity<CoveredPhoneDTO> getPhoneCoveredByStation(@PathVariable int stationNumber) {
+	public ResponseEntity<List<String>> getPhoneCoveredByStation(@PathVariable int stationNumber) {
 		try {
-			CoveredPhoneDTO phoneNumbers;
+			List<String> phoneNumbers;
 			phoneNumbers = finder.getCoveredPhone(stationNumber);
-			logger.info("Phone numbers found for station " + stationNumber + ": "+ phoneNumbers.getPhones());
+			logger.info("Phone numbers found for station " + stationNumber + ": "+ phoneNumbers);
 			
 			return ResponseEntity.ok(phoneNumbers);
 		} catch (StationNotFoundException e) {
