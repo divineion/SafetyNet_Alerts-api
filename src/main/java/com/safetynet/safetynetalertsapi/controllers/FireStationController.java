@@ -16,6 +16,7 @@ import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 import com.safetynet.safetynetalertsapi.services.finders.FireStationFinder;
+import com.safetynet.safetynetalertsapi.model.dto.FloodAlertDTO;
 
 @RestController
 public class FireStationController {
@@ -55,7 +56,13 @@ public class FireStationController {
 	
 	@GetMapping("/fire/{address}")
 	public ResponseEntity<FireAlertDTO> getFireAlertInfoByAddress(@PathVariable String address) {
-		FireAlertDTO fire = finder.getAllResidentsByAddress(address);
+		FireAlertDTO fire = finder.getFireAlertInfoByAddress(address);
 		return ResponseEntity.ok(fire);
+	}
+
+	@GetMapping("/flood/{stationNumbers}")
+	public ResponseEntity<?> getFloodAlertInfoByStations(@PathVariable List<Integer> stationNumbers) {
+		List<FloodAlertDTO> personsToAlert = finder.getFloodAlertInfoByStations(stationNumbers);
+		return ResponseEntity.ok(personsToAlert);
 	}
 }
