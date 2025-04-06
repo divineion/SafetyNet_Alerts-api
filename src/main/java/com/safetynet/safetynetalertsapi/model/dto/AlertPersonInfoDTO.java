@@ -61,4 +61,9 @@ public class AlertPersonInfoDTO implements Identifiable {
 	public void setMedications(List<String> medications) {
 		this.medications = medications;
 	}
+
+	@Override
+	public String toString() {
+		return this.getIdentity().toString();
+	}
 }
