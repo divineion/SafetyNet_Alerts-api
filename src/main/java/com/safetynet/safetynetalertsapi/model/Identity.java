@@ -1,14 +1,20 @@
 package com.safetynet.safetynetalertsapi.model;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-@Component
 public class Identity {
 	private String firstName;
 	
 	private String lastName;
+
+	public Identity() {}
+
+	public Identity(@JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
 	public String getFirstName() {
 		return firstName;

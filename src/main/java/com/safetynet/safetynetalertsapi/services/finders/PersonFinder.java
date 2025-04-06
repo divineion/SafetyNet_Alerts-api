@@ -76,7 +76,7 @@ public class PersonFinder {
 		// Filtrer les personnes par adresse
 		List<Person> houseHoldMembers = findAll().stream()
 				// la méthode filter attend un boolean
-				.filter(person -> person.getAddress().getStreet().replace(" ", "").equalsIgnoreCase(address))
+				.filter(person -> person.getAddress().getAddress().replace(" ", "").equalsIgnoreCase(address))
 				.collect(Collectors.toList());
 
 		return houseHoldMembers;

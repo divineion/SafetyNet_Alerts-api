@@ -29,7 +29,7 @@ public class CoveredPersonDTO implements Identifiable {
 	}
 
 	public String getAddress() {
-		return address.getStreet();
+		return address.getAddress();
 	}
 
 	public void setAddress(Address address) {
@@ -45,6 +45,6 @@ public class CoveredPersonDTO implements Identifiable {
 	}
 	
 	public String toString() {
-		return this.identity.toString() + " " + this.address.getStreet() + " " +  this.phone;
+		return this.identity.toString() + " " + this.address.getAddress() + " " +  this.phone;
 	}
 }

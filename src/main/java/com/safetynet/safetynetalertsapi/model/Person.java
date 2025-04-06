@@ -25,6 +25,16 @@ public class Person implements Identifiable {
 	@JsonProperty("email")
 	private String email;
 
+	public Person(Identity identity, Address address, String phone, String email) {
+		this.identity = identity;
+		this.address = address;
+		this.phone = phone;
+		this.email = email;
+	}
+
+	public Person() {
+	}
+
 	public Identity getIdentity() {
 		return identity;
 	}
