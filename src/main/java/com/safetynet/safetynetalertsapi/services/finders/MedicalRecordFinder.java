@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.safetynet.safetynetalertsapi.model.Identity;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
-import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
+import com.safetynet.safetynetalertsapi.repositories.JsonDataHandler;
 
 @Service
 public class MedicalRecordFinder {
@@ -17,10 +17,10 @@ public class MedicalRecordFinder {
 	Logger logger = LogManager.getLogger(MedicalRecord.class);
 
 	@Autowired
-	JsonDataProvider provider;
+    JsonDataHandler dataHandler;
 	
 	public List<MedicalRecord> findAll() {
-		List<MedicalRecord> medicalRecords = provider.findAllMedicalRecords();
+		List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
 		
 		return medicalRecords;
 	}

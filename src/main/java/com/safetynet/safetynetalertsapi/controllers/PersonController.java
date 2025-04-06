@@ -25,7 +25,7 @@ public class PersonController {
 	private static Logger logger = LogManager.getLogger(PersonController.class);
 	
 	@Autowired
-	JsonDataProvider allDataProvider;
+	JsonDataHandler dataHandler;
 	
 	@Autowired
 	private PersonFinder personFinder;

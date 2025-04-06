@@ -16,7 +16,7 @@ import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FamilyMemberDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonInfoDTO;
-import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
+import com.safetynet.safetynetalertsapi.repositories.JsonDataHandler;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.PersonMapper;
 
@@ -26,7 +26,7 @@ public class PersonFinder {
 	Logger logger = LogManager.getLogger(PersonFinder.class);
 
 	@Autowired
-	private JsonDataProvider dataProvider;
+	private JsonDataHandler dataHandler;
 
 	@Autowired
 	private MedicalRecordFinder medicalRecordFinder;
@@ -38,7 +38,7 @@ public class PersonFinder {
 	PersonFilterService filterService;
 
 	public List<Person> findAll() {
-		List<Person> data = dataProvider.findAllPersons();
+		List<Person> data = dataHandler.findAllPersons();
 		
 		return data;
 	}

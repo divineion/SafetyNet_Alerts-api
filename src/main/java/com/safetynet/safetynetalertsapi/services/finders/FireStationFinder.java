@@ -16,7 +16,7 @@ import com.safetynet.safetynetalertsapi.model.dto.AlertPersonInfoDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
-import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
+import com.safetynet.safetynetalertsapi.repositories.JsonDataHandler;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
 import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
@@ -24,7 +24,7 @@ import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator
 @Service
 public class FireStationFinder {
 	@Autowired
-	private JsonDataProvider provider;
+	private JsonDataHandler dataHandler;
 
 	@Autowired
 	private FireStationMapper mapper;
@@ -41,7 +41,7 @@ public class FireStationFinder {
 	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
 
 	public List<FireStationDTO> getAllFireStations() {
-		List<FireStation> fireStations = provider.findAllFireStations();
+		List<FireStation> fireStations = dataHandler.findAllFireStations();
 
 		return mapper.fromFireStationsToFireStationsDTO(fireStations);
 	}
