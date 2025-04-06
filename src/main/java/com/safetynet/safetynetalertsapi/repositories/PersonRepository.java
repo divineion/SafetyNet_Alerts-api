@@ -26,7 +26,7 @@ public class PersonRepository {
         List<Person> persons = dataHandler.findAllPersons();
 
         if ( persons.stream().anyMatch(p-> p.getIdentity().equals(person.getIdentity())) ) {
-            throw new PersonAlreadyExistsException(person.getIdentity().toString() + "is already in the database");
+            throw new PersonAlreadyExistsException(person.getIdentity().toString() + " is already in the database");
         }
 
         dataHandler.write(person);

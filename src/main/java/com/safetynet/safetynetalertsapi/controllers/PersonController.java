@@ -2,10 +2,13 @@ package com.safetynet.safetynetalertsapi.controllers;
 
 import java.util.List;
 
+import com.safetynet.safetynetalertsapi.exceptions.PersonAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.services.persisters.PersonPersister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,13 +80,18 @@ public class PersonController {
 
 	/**
 	 * Create - Add a new {@link Person}
-	 * @param person An object {@link Person}
+	 * @param personDto An object {@link Person}
 	 * @return The person object saved
 	 */
 	@PostMapping("/person")
-	public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-            Person savedperson = persister.savePerson(person);
+	public ResponseEntity<PersonDTO> createPerson(@RequestBody PersonDTO personDto) {
+		try {
+			PersonDTO savedperson = persister.savePerson(personDto);
 			return ResponseEntity.status(201).body(savedperson);
+		} catch(PersonAlreadyExistsException e) {
+			logger.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
     }
 	
 	public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
