@@ -5,6 +5,7 @@ import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,13 @@ public class PersonMapper {
 		
 		return personInfoDTOList;
 		
+	}
+
+	public PersonDTO fromPersonToPersonDTO(Person person) {
+		return new PersonDTO(person.getIdentity(), person.getAddress(), person.getPhone(), person.getEmail());
+	}
+
+	public Person fromPersonDtoToPerson(PersonDTO persondto) {
+		return new Person(persondto.getIdentity(), persondto.getAddress(), persondto.getPhone(), persondto.getEmail());
 	}
 }

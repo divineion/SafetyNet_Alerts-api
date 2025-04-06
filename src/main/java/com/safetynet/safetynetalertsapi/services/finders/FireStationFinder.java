@@ -16,7 +16,7 @@ import com.safetynet.safetynetalertsapi.model.dto.AlertPersonInfoDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireAlertDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationCoverageDTO;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
-import com.safetynet.safetynetalertsapi.repositories.JsonDataProvider;
+import com.safetynet.safetynetalertsapi.repositories.JsonDataHandler;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
 import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
@@ -24,7 +24,7 @@ import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator
 @Service
 public class FireStationFinder {
 	@Autowired
-	private JsonDataProvider provider;
+	private JsonDataHandler dataHandler;
 
 	@Autowired
 	private FireStationMapper mapper;
@@ -41,7 +41,7 @@ public class FireStationFinder {
 	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
 
 	public List<FireStationDTO> getAllFireStations() {
-		List<FireStation> fireStations = provider.findAllFireStations();
+		List<FireStation> fireStations = dataHandler.findAllFireStations();
 
 		return mapper.fromFireStationsToFireStationsDTO(fireStations);
 	}
@@ -68,7 +68,7 @@ public class FireStationFinder {
 	/**
 	 * Retrieves a list of CoveredPersonDTO that represents covered persons by a
 	 * station Steps : - calls
-	 * {@link FireStationFinder#getFireStationAddressesCoverage()} method - store
+	 * {@link FireStationFinder#getFireStationAddressesCoverage(int)} method - store
 	 * addresses in a collection - for each address, retrieves all persons living at
 	 * this address
 	 * 
@@ -86,9 +86,9 @@ public class FireStationFinder {
 	}
 
 	/**
-	 * This method: - calls {@link FireStationFinder#getFireStationCoverage()} to
+	 * This method: - calls {@link FireStationFinder#getFireStationCoverage(int)} to
 	 * list the persons covered by a station, - uses
-	 * {@link PersonFilterService#filterChildren()} to retrieve children, - uses
+	 * {@link PersonFilterService#filterChildren(List)} to retrieve children, - uses
 	 * count() to count children among them, - uses
 	 * {@link PersonFilterService#countAdults(List)} to count the adults among them.
 	 * 
@@ -110,10 +110,10 @@ public class FireStationFinder {
 	 * Steps:
 	 * - Call getCoveredPersons() to retrieve a list of CoveredPersonDTOs.
 	 * - Stream the list and map each person to their phone number.
-	 * - Collect the unique phone and return the results as a {@link CoveredPhoneDTO}.
+	 * - Collect the unique phone and return the results as a {@link List<String>}.
 	 *
 	 * @param stationNumber the fire station number
-	 * @return a {@link CoveredPhoneDTO} containing the fire station number and a list of
+	 * @return a {@link List<String>} containing the fire station number and a list of
 	 * unique phone numbers of covered persons
 	 * @throws StationNotFoundException 
 	 */

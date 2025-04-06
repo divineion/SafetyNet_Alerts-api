@@ -1,0 +1,37 @@
+package com.safetynet.safetynetalertsapi.services.persisters;
+
+import com.safetynet.safetynetalertsapi.exceptions.PersonAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.model.Person;
+import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
+import com.safetynet.safetynetalertsapi.repositories.PersonRepository;
+import com.safetynet.safetynetalertsapi.services.mappers.PersonMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+
+@Service
+public class PersonPersister {
+
+    @Autowired
+    PersonRepository repository;
+
+    @Autowired
+    PersonMapper mapper;
+
+    private final Logger logger = LogManager.getLogger(PersonPersister.class);
+
+    public PersonDTO savePerson(PersonDTO personDto) throws PersonAlreadyExistsException {
+        Person person = mapper.fromPersonDtoToPerson(personDto);
+        try {
+            Person savedPerson = repository.save(person);
+
+            PersonDTO responsePerson = mapper.fromPersonToPersonDTO(savedPerson);
+            return responsePerson;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

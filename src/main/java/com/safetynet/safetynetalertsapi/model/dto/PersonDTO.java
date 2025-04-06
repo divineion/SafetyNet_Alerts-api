@@ -15,7 +15,9 @@ public class PersonDTO implements Identifiable {
 	private String phone;
 	
 	private String email;
-	
+
+	public PersonDTO() {}
+
     public PersonDTO(Identity identity, Address address, String phone, String email) {
     	this.identity = identity;
     	this.address = address;

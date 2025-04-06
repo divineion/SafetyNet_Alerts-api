@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import com.safetynet.safetynetalertsapi.services.finders.MedicalRecordFinder;
 
 @Service
 public class PersonFilterService {
+
+	private final Logger logger = LogManager.getLogger(PersonFilterService.class);
 
 	@Autowired
 	private MedicalRecordFinder recordFinder;
@@ -35,7 +39,7 @@ public class PersonFilterService {
 	/**
 	 * Filters and returns all children (18 or younger) from a given list of persons. 
 	 * 
-	 * @param person a list of person to be filtered ; any type that implements {@link Identifiable}.
+	 * @param persons a list of person to be filtered ; any type that implements {@link Identifiable}.
 	 * @return a List of persons classified as children. 
 	 */
 	public <T extends Identifiable> List<T> filterChildren(List<T> persons) {
@@ -51,7 +55,7 @@ public class PersonFilterService {
 	/**
 	 * Counts the number of adults (older than 18) in a given list of persons. 
 	 * 
-	 * @param person a list of person to be filtered ; any type that implements {@link Identifiable}.
+	 * @param persons a list of person to be filtered ; any type that implements {@link Identifiable}.
 	 * @return the number of persons classified as adults. 
 	 */
 	public <T extends Identifiable> long countAdults(List<T> persons) {

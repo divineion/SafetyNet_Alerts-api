@@ -3,19 +3,26 @@ package com.safetynet.safetynetalertsapi.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Address {
-	@JsonProperty("address")
-	private String street;
+	private String address;
 	
 	private String city;
 	
 	private String zip;
 
-	public String getStreet() {
-		return street;
+	public Address() {}
+
+	public Address(String address, String city, String zip) {
+		this.address = address;
+		this.city = city;
+		this.zip = zip;
 	}
 
-	public void setStreet(String street) {
-		this.street = street;
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getCity() {
@@ -35,6 +42,6 @@ public class Address {
 	}
 	
 	public String toString() {
-		return this.street + " " + this.city + " " + this.zip;
+		return this.address + " " + this.city + " " + this.zip;
 	}
 }
