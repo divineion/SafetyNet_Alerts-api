@@ -48,7 +48,7 @@ public class FireStation {
 	
 	@Override
 	public String toString() {
-		return "station: " + this.station + "\n address: " + this.address;  
+		return this.address + this.station;
 	}
 
 	@Override
