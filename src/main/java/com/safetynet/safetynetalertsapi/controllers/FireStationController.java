@@ -65,4 +65,20 @@ public class FireStationController {
 		List<FloodAlertDTO> personsToAlert = finder.getFloodAlertInfoByStations(stationNumbers);
 		return ResponseEntity.ok(personsToAlert);
 	}
+
+	/**
+	 * Create - Add a new {@link FireStation} to the data source file.
+	 *
+	 * @param fireStationDTO an object {@link FireStationDTO} representing a {@link FireStation}
+	 * @return The fire station object saved
+	 */
+	@PostMapping("/firestation")
+	public ResponseEntity<FireStationDTO> createFireStation(@RequestBody FireStationDTO fireStationDTO) {
+		try {
+			FireStationDTO savedFireStation = persister.saveFireStation(fireStationDTO);
+			return ResponseEntity.ok(savedFireStation);
+		} catch(ResourceAlreadyExistsException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+    }
 }
