@@ -1,7 +1,9 @@
 package com.safetynet.safetynetalertsapi.repositories;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
+import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class FireStationRepository {
 
     @Autowired
     JsonDataHandler dataHandler;
+
+    @Autowired
+    StringFormatter formatter;
 
     public FireStation save(FireStation fireStation) throws ResourceAlreadyExistsException, IOException {
         List<FireStation> fireStations = dataHandler.findAllFireStations();
@@ -34,5 +39,17 @@ public class FireStationRepository {
         dataHandler.write(fireStation);
 
         return fireStation;
+    }
+
+    public void delete(String identifier) throws ResourceNotFoundException, RuntimeException {
+        List<FireStation> fireStations = dataHandler.findAllFireStations();
+
+        if (fireStations.stream().noneMatch(fs -> {
+            return formatter.normalizeString(fs.toString()).equals(identifier);
+        }))
+        {
+            throw new ResourceNotFoundException("The station with the provided address and station number is not found.");
+        }
+        dataHandler.delete(FireStation.class, identifier);
     }
 }
