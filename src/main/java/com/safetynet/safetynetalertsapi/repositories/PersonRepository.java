@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.List;
 
 @Repository
@@ -24,9 +23,7 @@ public class PersonRepository {
         if ( persons.stream().anyMatch(p-> p.getIdentity().equals(person.getIdentity())) ) {
             throw new ResourceAlreadyExistsException(person.getIdentity().toString() + " is already in the database");
         }
-
         dataHandler.write(person);
-
         return person;
     }
 
@@ -34,12 +31,18 @@ public class PersonRepository {
         List<Person> persons = dataHandler.findAllPersons();
 
         if (persons.stream().noneMatch(p-> p.getIdentity().equals(person.getIdentity()))) {
-            throw new ResourceNotFoundException(person.getIdentity().toString() + " is already in the database");
+            throw new ResourceNotFoundException(person.getIdentity().toString() + " is not found in the database");
         }
-
         dataHandler.update(person);
-
         return person;
+    }
 
+    public void delete(String identity) throws ResourceNotFoundException {
+        List<Person> persons = dataHandler.findAllPersons();
+
+        if (persons.stream().noneMatch(p -> p.getIdentity().toString().equals(identity))) {
+            throw new ResourceNotFoundException(identity + " is not found in the database");
+        }
+        dataHandler.delete(Person.class, identity);
     }
 }
