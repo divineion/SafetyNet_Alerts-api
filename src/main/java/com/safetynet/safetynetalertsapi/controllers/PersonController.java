@@ -116,6 +116,9 @@ public class PersonController {
 		} catch(ResourceNotFoundException e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(404).build();
-		}
-	}
+		} catch (RuntimeException e) {
+            logger.error("An error occurred while deleting the resource");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
+        }
+    }
 }
