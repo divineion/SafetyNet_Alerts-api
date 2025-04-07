@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.safetynet.safetynetalertsapi.constants.DataBaseFilePaths;
+import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class JsonDataHandler implements DataHandler {
 	
 	@Autowired
 	private DataSetLoader dataSetLoader;
+
+	@Autowired
+	private StringFormatter formatter;
 
 	private static final File file = new File(DataBaseFilePaths.DATABASE_JSON_PATH);
 
@@ -89,7 +93,7 @@ public class JsonDataHandler implements DataHandler {
 					Person existingPerson = persons.get(i);
 
                     //si la personne est trouvée, on la remplace par les prop de la ressource fournie
-                    if (newPerson.getIdentity().equals(persons.get(i).getIdentity())) {
+                    if (formatter.normalizeString(newPerson.getIdentity().toString()).equals(formatter.normalizeString(persons.get(i).getIdentity().toString()))){
 						persons.set(i, newPerson);
 						break;
                     }
@@ -113,7 +117,7 @@ public class JsonDataHandler implements DataHandler {
 		}
 	}
 
-	public void delete(Class<Person> type, String uniqueIdentifier) {
+	public <T> void delete(Class<T> type, String uniqueIdentifier) {
 		try {
 			DataSet existingData = mapper.readValue(file, DataSet.class);
 
@@ -122,16 +126,31 @@ public class JsonDataHandler implements DataHandler {
 
 				//chercher la personne dans la liste
 				for (int i = 0; i < persons.size(); i++) {
-					Person existingPerson = persons.get(i);
+					Person personToDelete = persons.get(i);
 
 					//si la personne est trouvée, on la supprime
-					if (uniqueIdentifier.equals(existingPerson.getIdentity().toString())) {
-						persons.remove(existingPerson);
+					if (formatter.normalizeString(uniqueIdentifier).equals(formatter.normalizeString(personToDelete.getIdentity().toString()))) {
+						persons.remove(personToDelete);
 						break;
 					}
 				}
 				existingData.setPersons(persons);
 			}
+
+			if (type.equals(FireStation.class)) {
+				List<FireStation> fireStations = existingData.getFireStations();
+
+				for (int i = 0; i < fireStations.size(); i++) {
+					FireStation fireStationToDelete = fireStations.get(i);
+
+					if (formatter.normalizeString(uniqueIdentifier).equals(formatter.normalizeString(fireStationToDelete.toString()))) {
+						fireStations.remove(fireStationToDelete);
+						break;
+					}
+				}
+				existingData.setFireStations(fireStations);
+			}
+
 			mapper.writeValue(file, existingData);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
