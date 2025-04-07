@@ -112,4 +112,30 @@ public class JsonDataHandler implements DataHandler {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public void delete(Class<Person> type, String uniqueIdentifier) {
+		try {
+			DataSet existingData = mapper.readValue(file, DataSet.class);
+
+			if (type.equals(Person.class)) {
+				List<Person> persons = existingData.getPersons();
+
+				//chercher la personne dans la liste
+				for (int i = 0; i < persons.size(); i++) {
+					Person existingPerson = persons.get(i);
+
+					//si la personne est trouvée, on la supprime
+					if (uniqueIdentifier.equals(existingPerson.getIdentity().toString())) {
+						persons.remove(existingPerson);
+						break;
+					}
+				}
+				existingData.setPersons(persons);
+			}
+			mapper.writeValue(file, existingData);
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 }
