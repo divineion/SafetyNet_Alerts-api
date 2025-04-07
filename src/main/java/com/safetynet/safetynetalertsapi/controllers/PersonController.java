@@ -9,6 +9,7 @@ import com.safetynet.safetynetalertsapi.services.persisters.PersonPersister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -99,15 +100,22 @@ public class PersonController {
 	public ResponseEntity<PersonDTO> updatePerson(@PathVariable String identity, @RequestBody PersonDTO personDto) {
 		try {
 			PersonDTO updatedPersonDto = persister.updatePerson(personDto);
-
 			return ResponseEntity.status(200).body(updatedPersonDto);
 		} catch(ResourceNotFoundException e) {
 			logger.error(e.getMessage());
-			return null;
+			return ResponseEntity.status(404).build();
 		}
 	}
-	
-	public ResponseEntity<Person> deletePerson(@RequestBody Person person) {
-		return null;
+
+	@DeleteMapping("/person/{identity}")
+	public HttpEntity<?> deletePerson(@PathVariable String identity) {
+		try {
+			persister.deletePerson(identity);
+			logger.info("Person named {} has been successfully deleted", identity);
+			return ResponseEntity.noContent().build();
+		} catch(ResourceNotFoundException e) {
+			logger.error(e.getMessage());
+			return ResponseEntity.status(404).build();
+		}
 	}
 }
