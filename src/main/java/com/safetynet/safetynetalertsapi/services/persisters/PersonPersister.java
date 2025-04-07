@@ -34,4 +34,17 @@ public class PersonPersister {
             throw new RuntimeException(e);
         }
     }
+
+    public PersonDTO updatePerson(PersonDTO personDto) throws ResourceNotFoundException {
+        Person person = mapper.fromPersonDtoToPerson(personDto);
+        try {
+            Person updatedPerson = repository.update(person);
+
+            PersonDTO responsePerson = mapper.fromPersonToPersonDTO(updatedPerson);
+            return responsePerson;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }
