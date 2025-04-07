@@ -11,8 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
 public class PersonPersister {
 
@@ -34,14 +32,12 @@ public class PersonPersister {
 
     public PersonDTO updatePerson(PersonDTO personDto) throws ResourceNotFoundException {
         Person person = mapper.fromPersonDtoToPerson(personDto);
-        try {
-            Person updatedPerson = repository.update(person);
-
-            PersonDTO responsePerson = mapper.fromPersonToPersonDTO(updatedPerson);
+        Person updatedPerson = repository.update(person);
+        PersonDTO responsePerson = mapper.fromPersonToPersonDTO(updatedPerson);
             return responsePerson;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        }
+    }
+
+    public void deletePerson(String identity) throws ResourceNotFoundException {
+        repository.delete(identity);
     }
 }
