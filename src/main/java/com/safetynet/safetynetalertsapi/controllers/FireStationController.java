@@ -3,10 +3,13 @@ package com.safetynet.safetynetalertsapi.controllers;
 import java.util.List;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.services.persisters.FireStationPersister;
+import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,9 @@ public class FireStationController {
 
 	@Autowired
 	private FireStationPersister persister;
+
+	@Autowired
+	StringFormatter formatter;
 	
 	@GetMapping("/firestations")
 	public ResponseEntity<List<FireStationDTO>> getAllFireStations() {
@@ -84,6 +90,26 @@ public class FireStationController {
 			return ResponseEntity.ok(savedFireStation);
 		} catch(ResourceAlreadyExistsException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+    }
+
+	/**
+	 * Delete - Remove an association between a station number and an address
+	 * @param address - The address associated to the station
+	 * @param stationNumber - The station number associated to the given
+	 */
+	@DeleteMapping("/firestation/{stationNumber}/{address}")
+	public HttpEntity<?> deleteFireStation(@PathVariable String address, @PathVariable String stationNumber) {
+		try {
+			String identifier = formatter.normalizeString(address+stationNumber);
+			persister.deleteFireStation(identifier);
+            logger.info("The relation between the firestation {} and the address {} has been removed", stationNumber, address);
+			return ResponseEntity.noContent().build();
+		} catch (ResourceNotFoundException e) {
+            logger.error("The specified address {} and station number {} are not associated.", address, stationNumber);
+			return ResponseEntity.status(404).build();
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
 		}
     }
 }
