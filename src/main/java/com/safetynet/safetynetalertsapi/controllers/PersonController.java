@@ -2,7 +2,8 @@ package com.safetynet.safetynetalertsapi.controllers;
 
 import java.util.List;
 
-import com.safetynet.safetynetalertsapi.exceptions.PersonAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.services.persisters.PersonPersister;
 import org.apache.logging.log4j.LogManager;
@@ -86,16 +87,24 @@ public class PersonController {
 	@PostMapping("/person")
 	public ResponseEntity<PersonDTO> createPerson(@RequestBody PersonDTO personDto) {
 		try {
-			PersonDTO savedperson = persister.savePerson(personDto);
-			return ResponseEntity.status(201).body(savedperson);
-		} catch(PersonAlreadyExistsException e) {
+			PersonDTO savedPerson = persister.savePerson(personDto);
+			return ResponseEntity.status(201).body(savedPerson);
+		} catch(ResourceAlreadyExistsException e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
     }
-	
-	public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
-		return null;
+
+	@PutMapping("/person/{identity}")
+	public ResponseEntity<PersonDTO> updatePerson(@PathVariable String identity, @RequestBody PersonDTO personDto) {
+		try {
+			PersonDTO updatedPersonDto = persister.updatePerson(personDto);
+
+			return ResponseEntity.status(200).body(updatedPersonDto);
+		} catch(ResourceNotFoundException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
 	}
 	
 	public ResponseEntity<Person> deletePerson(@RequestBody Person person) {

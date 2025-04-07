@@ -1,6 +1,7 @@
 package com.safetynet.safetynetalertsapi.services.persisters;
 
-import com.safetynet.safetynetalertsapi.exceptions.PersonAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.repositories.PersonRepository;
@@ -23,15 +24,24 @@ public class PersonPersister {
 
     private final Logger logger = LogManager.getLogger(PersonPersister.class);
 
-    public PersonDTO savePerson(PersonDTO personDto) throws PersonAlreadyExistsException {
+    public PersonDTO savePerson(PersonDTO personDto) throws ResourceAlreadyExistsException {
+        Person person = mapper.fromPersonDtoToPerson(personDto);
+        Person savedPerson = repository.save(person);
+
+        PersonDTO responsePerson = mapper.fromPersonToPersonDTO(savedPerson);
+        return responsePerson;
+    }
+
+    public PersonDTO updatePerson(PersonDTO personDto) throws ResourceNotFoundException {
         Person person = mapper.fromPersonDtoToPerson(personDto);
         try {
-            Person savedPerson = repository.save(person);
+            Person updatedPerson = repository.update(person);
 
-            PersonDTO responsePerson = mapper.fromPersonToPersonDTO(savedPerson);
+            PersonDTO responsePerson = mapper.fromPersonToPersonDTO(updatedPerson);
             return responsePerson;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
