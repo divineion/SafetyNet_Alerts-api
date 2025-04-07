@@ -17,7 +17,7 @@ public class PersonRepository {
     @Autowired
     JsonDataHandler dataHandler;
 
-    public Person save(Person person) throws ResourceAlreadyExistsException, IOException {
+    public Person save(Person person) throws ResourceAlreadyExistsException {
         List<Person> persons = dataHandler.findAllPersons();
 
         if ( persons.stream().anyMatch(p-> p.getIdentity().equals(person.getIdentity())) ) {
