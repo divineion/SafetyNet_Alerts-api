@@ -22,6 +22,13 @@ import com.safetynet.safetynetalertsapi.model.Person;
 public class JsonDataHandler implements DataHandler {
 
 	private final Logger logger = LogManager.getLogger(JsonDataHandler.class);
+
+	//			//Java 8 date/time type `java.time.LocalDate` not supported by default
+	//https://www.javacodegeeks.com/jackson-java-8-date-time-localdate-support-issues.html
+	//configure ObjectMapper
+	private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
+			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+			.enable(SerializationFeature.INDENT_OUTPUT);
 	
 	@Autowired
 	private DataSetLoader dataSetLoader;
@@ -44,14 +51,7 @@ public class JsonDataHandler implements DataHandler {
 		return getAllData().getMedicalRecords();
 	}
 
-	public void write(Object resource) throws IOException {
-		//			//Java 8 date/time type `java.time.LocalDate` not supported by default
-		//https://www.javacodegeeks.com/jackson-java-8-date-time-localdate-support-issues.html
-		//configure ObjectMapper
-		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
-				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-				.enable(SerializationFeature.INDENT_OUTPUT);
-
+	public void write(Object resource) {
 		try {
 			//représenter la structure complète du fichier
 			DataSet existingData = mapper.readValue(file, DataSet.class);
@@ -73,6 +73,43 @@ public class JsonDataHandler implements DataHandler {
 		} catch (
 				IOException e) {
 			logger.error("Failed to write object of type {}: {}", resource.getClass().getSimpleName(), e.getMessage());
+		}
+	}
+
+	public void update(Object resource) {
+		try {
+			DataSet existingData = mapper.readValue(file, DataSet.class);
+			// vérifier le type de resource et si OK affecter les propriétés à une nouvelle instance
+			if (resource instanceof Person newPerson) {
+				//stocker les data en argument
+                List<Person> persons = existingData.getPersons();
+
+				//chercher la personne dans la liste
+                for (int i = 0; i < persons.size(); i++) {
+					Person existingPerson = persons.get(i);
+
+                    //si la personne est trouvée, on la remplace par les prop de la ressource fournie
+                    if (newPerson.getIdentity().equals(persons.get(i).getIdentity())) {
+						persons.set(i, newPerson);
+						break;
+                    }
+                }
+				existingData.setPersons(persons);
+			}
+
+			// réécrire tte la structure mise à jour
+			mapper.writeValue(file, existingData);
+
+//			if (resource instanceof FireStation) {
+//				existingData.getFireStations().add((FireStation) resource);
+//			}
+
+//			if (resource instanceof MedicalRecord) {
+//				existingData.getMedicalRecords().add((MedicalRecord) resource);
+//			}
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 }
