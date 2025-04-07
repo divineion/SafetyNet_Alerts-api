@@ -37,7 +37,7 @@ public class PersonRepository {
         return person;
     }
 
-    public void delete(String identity) throws ResourceNotFoundException {
+    public void delete(String identity) throws ResourceNotFoundException, RuntimeException {
         List<Person> persons = dataHandler.findAllPersons();
 
         if (persons.stream().noneMatch(p -> p.getIdentity().toString().equals(identity))) {
