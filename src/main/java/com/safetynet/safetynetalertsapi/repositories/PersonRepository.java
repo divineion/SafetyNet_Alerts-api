@@ -1,6 +1,7 @@
 package com.safetynet.safetynetalertsapi.repositories;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.Person;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,5 +28,18 @@ public class PersonRepository {
         dataHandler.write(person);
 
         return person;
+    }
+
+    public Person update(Person person) throws ResourceNotFoundException {
+        List<Person> persons = dataHandler.findAllPersons();
+
+        if (persons.stream().noneMatch(p-> p.getIdentity().equals(person.getIdentity()))) {
+            throw new ResourceNotFoundException(person.getIdentity().toString() + " is already in the database");
+        }
+
+        dataHandler.update(person);
+
+        return person;
+
     }
 }
