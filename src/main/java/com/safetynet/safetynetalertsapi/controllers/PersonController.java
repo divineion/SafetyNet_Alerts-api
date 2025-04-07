@@ -2,7 +2,7 @@ package com.safetynet.safetynetalertsapi.controllers;
 
 import java.util.List;
 
-import com.safetynet.safetynetalertsapi.exceptions.PersonAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.services.persisters.PersonPersister;
 import org.apache.logging.log4j.LogManager;
@@ -86,9 +86,9 @@ public class PersonController {
 	@PostMapping("/person")
 	public ResponseEntity<PersonDTO> createPerson(@RequestBody PersonDTO personDto) {
 		try {
-			PersonDTO savedperson = persister.savePerson(personDto);
-			return ResponseEntity.status(201).body(savedperson);
-		} catch(PersonAlreadyExistsException e) {
+			PersonDTO savedPerson = persister.savePerson(personDto);
+			return ResponseEntity.status(201).body(savedPerson);
+		} catch(ResourceAlreadyExistsException e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
