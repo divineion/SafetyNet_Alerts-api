@@ -1,6 +1,7 @@
 package com.safetynet.safetynetalertsapi.services.persisters;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
@@ -37,5 +38,9 @@ public class FireStationPersister {
 
             throw new RuntimeException();
         }
+    }
+
+    public void deleteFireStation(String identifier) throws ResourceNotFoundException, RuntimeException {
+        repository.delete(identifier);
     }
 }
