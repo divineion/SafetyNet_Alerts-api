@@ -61,4 +61,8 @@ public class FireStationMapper {
 		
 		return residents;
 	}
+
+	public FireStation fromFireStationDtoToFireStation(FireStationDTO dto) {
+		return new FireStation(dto.getAddress(), dto.getStation());
+	}
 }

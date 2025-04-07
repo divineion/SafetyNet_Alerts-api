@@ -1,6 +1,9 @@
 package com.safetynet.safetynetalertsapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
+
+import java.util.Objects;
 
 /**
  * Represents a fire station in the SafetyNet Alerts system.
@@ -19,6 +22,13 @@ public class FireStation {
 	
 	@JsonProperty("station")
 	private int station;
+
+	public FireStation() {}
+
+	public FireStation(@JsonProperty("address") String address, @JsonProperty("station") int station) {
+		this.address = address;
+		this.station = station;
+	}
 	
 	public int getStation() {
 		return station;
@@ -39,5 +49,19 @@ public class FireStation {
 	@Override
 	public String toString() {
 		return "station: " + this.station + "\n address: " + this.address;  
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object ) return true;
+		if (object == null || this.getClass() != object.getClass()) return false;
+		FireStation fireStation = (FireStation) object;
+		return Objects.equals(address, ((FireStation) object).getAddress()) &&
+				Objects.equals(station, ((FireStation) object).getStation());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(address, station);
 	}
 }

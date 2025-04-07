@@ -33,24 +33,18 @@ public class JsonDataHandler implements DataHandler {
 	}
 	
 	public List<Person> findAllPersons() {
-		DataSet data = getAllData();
-		List<Person> persons = data.getPersons();
-		return persons;
+		return getAllData().getPersons();
 	}
 	
 	public List<FireStation> findAllFireStations() {
-		DataSet data = getAllData();
-		List<FireStation> fireStations = data.getFireStations();
-		return fireStations;
+		return getAllData().getFireStations();
 	}
 	
 	public List<MedicalRecord> findAllMedicalRecords() {
-		DataSet data = getAllData();
-		List<MedicalRecord> medicalRecords = data.getMedicalRecords();
-		return medicalRecords;
+		return getAllData().getMedicalRecords();
 	}
 
-	public void write(Person person) throws IOException {
+	public void write(Object resource) throws IOException {
 		//			//Java 8 date/time type `java.time.LocalDate` not supported by default
 		//https://www.javacodegeeks.com/jackson-java-8-date-time-localdate-support-issues.html
 		//configure ObjectMapper
@@ -61,15 +55,24 @@ public class JsonDataHandler implements DataHandler {
 		try {
 			//représenter la structure complète du fichier
 			DataSet existingData = mapper.readValue(file, DataSet.class);
-
 			//ajouter les données
-			existingData.getPersons().add(person);
+			if (resource instanceof Person) {
+				existingData.getPersons().add((Person) resource);
+			}
+
+			if (resource instanceof FireStation) {
+				existingData.getFireStations().add((FireStation) resource);
+			}
+
+			if (resource instanceof MedicalRecord) {
+				existingData.getMedicalRecords().add((MedicalRecord) resource);
+			}
 			// réécrire tte la structure mise à jour
 			mapper.writeValue(file, existingData);  //
 
 		} catch (
 				IOException e) {
-			logger.error(e.getMessage());
+			logger.error("Failed to write object of type {}: {}", resource.getClass().getSimpleName(), e.getMessage());
 		}
 	}
 }
