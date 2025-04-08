@@ -21,8 +21,9 @@ public class MedicalRecordController {
     MedicalRecordPersister persister;
 
     /**
-     * Create - Add a new {@link MedicalRecordDTO}
-     * @param medicalRecordDTO An object {@link MedicalRecord}
+     * Creates a {@link MedicalRecord} for a person identified by their last name and first name.
+     *
+     * @param medicalRecordDTO representing the data structure of a {@link MedicalRecord}
      * @return The person object saved
      */
     @PostMapping("/medicalrecord")
@@ -37,11 +38,19 @@ public class MedicalRecordController {
         }
     }
 
-    @PutMapping("/medicalrecord/{identity}")
-    public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable String identity, @RequestBody MedicalRecordDTO medicalRecordDTO) {
+    /**
+     * Updates the medical record for a person identified by their last name and first name.
+     *
+     * @param lastName the lastname of the person
+     * @param medicalRecordDTO representing the data structure of a {@link MedicalRecord}
+     * @return a {@link ResponseEntity} containing a JSON representation of the updated medical record
+     */
+    @PutMapping("/medicalrecord/{lastName}/{firstName}")
+    public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable String lastName, @PathVariable String firstName, @RequestBody MedicalRecordDTO medicalRecordDTO) {
         logger.debug("Attempting to update the medical record of {}", medicalRecordDTO.getIdentity());
         try {
             persister.updateMedicalRecord(medicalRecordDTO);
+            logger.info("The medical record of {} {} has been updated.", lastName, firstName);
             return ResponseEntity.ok(medicalRecordDTO);
         } catch (ResourceNotFoundException e) {
             logger.error(e.getMessage());
@@ -49,6 +58,29 @@ public class MedicalRecordController {
         } catch (NoChangesDetectedException e) {
             logger.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+    }
+
+    /**
+     * Deletes the {@link MedicalRecord} for a person identified by their last name and first name.
+     *
+     * @param lastName the last name of the person related to the medical record
+     * @param firstName the first name of the person related to the medical record
+     * @return a {@link ResponseEntity} indicating the result of the deletion attempt:
+     *  - HTTP status 204 No Content if the record is successfully deleted,
+     *  - HTTP status 404 if the record does not exist.
+     */
+    @DeleteMapping("/medicalrecord/{lastName}/{firstName}")
+    public ResponseEntity<Void> deleteMedicalRecord(@PathVariable String lastName, @PathVariable String firstName) {
+        String fullName = lastName + " " + firstName;
+        logger.debug("Attempting to delete medical record of {} {}.", lastName, firstName);
+        try {
+           persister.deleteMedicalRecord(lastName, firstName);
+           logger.info("The medical record of {} {} has been removed.", lastName, firstName);
+           return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch(ResourceNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

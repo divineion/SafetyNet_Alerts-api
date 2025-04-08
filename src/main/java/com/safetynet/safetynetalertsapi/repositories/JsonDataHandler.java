@@ -169,6 +169,20 @@ public class JsonDataHandler implements DataHandler {
                 existingData.setFireStations(fireStations);
             }
 
+            if (type.equals(MedicalRecord.class)) {
+                List<MedicalRecord> medicalRecords = existingData.getMedicalRecords();
+
+                for (int i = 0; i < medicalRecords.size(); i++) {
+                    MedicalRecord medicalRecordToDelete = medicalRecords.get(i);
+
+                    if (formatter.normalizeString(uniqueIdentifier).equals(formatter.normalizeString(medicalRecordToDelete.getIdentity().toString()))) {
+                        medicalRecords.remove(medicalRecordToDelete);
+                        break;
+                    }
+                }
+                existingData.setMedicalRecords(medicalRecords);
+            }
+
             mapper.writeValue(file, existingData);
         } catch (IOException e) {
             logger.error(e.getMessage());
