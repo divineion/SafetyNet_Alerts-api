@@ -42,4 +42,8 @@ public class MedicalRecordPersister {
 
         return mapper.fromMedicalRecordToMedicalRecordDto(updatedMedicalRecord);
     }
+
+    public void deleteMedicalRecord(String lastName, String firstName) throws ResourceNotFoundException {
+        repository.delete(lastName, firstName);
+    }
 }

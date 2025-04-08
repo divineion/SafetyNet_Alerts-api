@@ -38,7 +38,7 @@ public class MedicalRecordRepository {
     public MedicalRecord update(MedicalRecord medicalRecord) throws ResourceNotFoundException, NoChangesDetectedException {
         List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
 
-        if (medicalRecords.stream().noneMatch(record -> formatter.normalizeString(record.getIdentity().toString()).equals(formatter.normalizeString(medicalRecord.getIdentity().toString())))) {
+        if (medicalRecords.stream().noneMatch(record -> record.getIdentity().toString().equalsIgnoreCase(medicalRecord.getIdentity().toString()))) {
             throw new ResourceNotFoundException(String.format("No medical record exists for %s", medicalRecord.getIdentity()));
         }
 
@@ -54,5 +54,16 @@ public class MedicalRecordRepository {
         dataHandler.update(medicalRecord);
 
         return medicalRecord;
+    }
+
+    public void delete(String lastName, String firstName) throws ResourceNotFoundException {
+        List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
+        String uniqueIdentifier = lastName.concat(firstName);
+
+        if (medicalRecords.stream().noneMatch(record -> formatter.normalizeString(record.getIdentity().toString()).equals(uniqueIdentifier))) {
+            throw new ResourceNotFoundException("No medical record exists for this identifier");
+        }
+
+        dataHandler.delete(MedicalRecord.class, uniqueIdentifier);
     }
 }
