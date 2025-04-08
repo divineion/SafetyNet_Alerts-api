@@ -27,9 +27,7 @@ public class JsonDataHandler implements DataHandler {
     //			//Java 8 date/time type `java.time.LocalDate` not supported by default
     //https://www.javacodegeeks.com/jackson-java-8-date-time-localdate-support-issues.html
     //configure ObjectMapper
-    private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .enable(SerializationFeature.INDENT_OUTPUT);
+    private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).enable(SerializationFeature.INDENT_OUTPUT);
 
     @Autowired
     private DataSetLoader dataSetLoader;
@@ -74,8 +72,7 @@ public class JsonDataHandler implements DataHandler {
             // réécrire tte la structure mise à jour
             mapper.writeValue(file, existingData);  //
 
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             logger.error("Failed to write object of type {}: {}", resource.getClass().getSimpleName(), e.getMessage());
         }
     }
@@ -116,6 +113,21 @@ public class JsonDataHandler implements DataHandler {
                 }
                 existingData.setFireStations(fireStations);
             }
+
+            if (resource instanceof MedicalRecord newMedicalRecord) {
+                List<MedicalRecord> medicalRecords = existingData.getMedicalRecords();
+
+                for (int i = 0; i < medicalRecords.size(); i++) {
+                    MedicalRecord existingMedicalRecord = medicalRecords.get(i);
+
+                    if (newMedicalRecord.getIdentity().equals(existingMedicalRecord.getIdentity())) {
+                        medicalRecords.set(i, newMedicalRecord);
+                        break;
+                    }
+                }
+                existingData.setMedicalRecords(medicalRecords);
+            }
+
             mapper.writeValue(file, existingData);
         } catch (IOException e) {
             logger.error(e.getMessage());
