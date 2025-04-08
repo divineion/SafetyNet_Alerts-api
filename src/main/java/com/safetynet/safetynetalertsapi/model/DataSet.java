@@ -34,7 +34,7 @@ public class DataSet {
 		return medicalRecords;
 	}
 
-	public void setMedicalrecords(List<MedicalRecord> medicalRecords) {
+	public void setMedicalRecords(List<MedicalRecord> medicalRecords) {
 		this.medicalRecords = medicalRecords;
 	}
 }

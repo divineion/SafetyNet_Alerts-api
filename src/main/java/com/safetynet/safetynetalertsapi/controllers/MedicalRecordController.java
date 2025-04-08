@@ -1,5 +1,6 @@
 package com.safetynet.safetynetalertsapi.controllers;
 
+import com.safetynet.safetynetalertsapi.exceptions.NoChangesDetectedException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
@@ -10,9 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MedicalRecordController {
@@ -38,4 +37,18 @@ public class MedicalRecordController {
         }
     }
 
+    @PutMapping("/medicalrecord/{identity}")
+    public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable String identity, @RequestBody MedicalRecordDTO medicalRecordDTO) {
+        logger.debug("Attempting to update the medical record of {}", medicalRecordDTO.getIdentity());
+        try {
+            persister.updateMedicalRecord(medicalRecordDTO);
+            return ResponseEntity.ok(medicalRecordDTO);
+        } catch (ResourceNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (NoChangesDetectedException e) {
+            logger.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+    }
 }
