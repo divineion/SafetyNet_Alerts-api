@@ -41,12 +41,14 @@ public class FireStationRepository {
     public void delete(String identifier) throws ResourceNotFoundException, RuntimeException {
         List<FireStation> fireStations = dataHandler.findAllFireStations();
 
-        if (fireStations.stream().noneMatch(fs -> {
-            return formatter.normalizeString(fs.toString()).equals(identifier);
-        })) {
-            throw new ResourceNotFoundException("The station with the provided address and station number is not found.");
-        }
-        dataHandler.delete(FireStation.class, identifier);
+        //REFACTO : simplifier la vérification et passer directemet l'objet à supprimer
+        FireStation fireStationToDelete = fireStations
+                .stream()
+                .filter(fs -> formatter.normalizeString(fs.toString()).equals(identifier))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("The station with the provided address and station number is not found."));
+
+        dataHandler.delete(FireStation.class, fireStationToDelete);
     }
 
     public FireStation update(FireStation fireStation, String address) throws ResourceNotFoundException, InvalidAddressException {

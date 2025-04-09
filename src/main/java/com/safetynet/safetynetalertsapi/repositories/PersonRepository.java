@@ -3,6 +3,7 @@ package com.safetynet.safetynetalertsapi.repositories;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.Person;
+import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class PersonRepository {
     public final Logger logger = LogManager.getLogger();
     @Autowired
     JsonDataHandler dataHandler;
+
+    @Autowired
+    StringFormatter formatter;
 
     public Person save(Person person) throws ResourceAlreadyExistsException {
         List<Person> persons = dataHandler.findAllPersons();
@@ -37,12 +41,16 @@ public class PersonRepository {
         return person;
     }
 
-    public void delete(String identity) throws ResourceNotFoundException, RuntimeException {
+    public void delete(String lastName, String firstName) throws ResourceNotFoundException, RuntimeException {
         List<Person> persons = dataHandler.findAllPersons();
+        String uniqueIdentifier = formatter.normalizeString(firstName.concat(lastName));
 
-        if (persons.stream().noneMatch(p -> p.getIdentity().toString().equals(identity))) {
-            throw new ResourceNotFoundException(identity + " is not found in the database");
-        }
-        dataHandler.delete(Person.class, identity);
+        Person personToDelete = persons
+                .stream()
+                .filter(p -> formatter.normalizeString(p.getIdentity().toString()).equals(uniqueIdentifier))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(uniqueIdentifier + " is not found in the database"));
+
+        dataHandler.delete(Person.class, personToDelete);
     }
 }

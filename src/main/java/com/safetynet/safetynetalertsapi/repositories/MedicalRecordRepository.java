@@ -58,12 +58,14 @@ public class MedicalRecordRepository {
 
     public void delete(String lastName, String firstName) throws ResourceNotFoundException {
         List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
-        String uniqueIdentifier = lastName.concat(firstName);
+        String uniqueIdentifier = firstName.concat(lastName);
 
-        if (medicalRecords.stream().noneMatch(record -> formatter.normalizeString(record.getIdentity().toString()).equals(uniqueIdentifier))) {
-            throw new ResourceNotFoundException("No medical record exists for this identifier");
-        }
+        MedicalRecord medicalRecordToDelete = medicalRecords
+                .stream()
+                .filter(record -> formatter.normalizeString(record.getIdentity().toString()).equals(uniqueIdentifier))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("No medical record exists for this identifier"));
 
-        dataHandler.delete(MedicalRecord.class, uniqueIdentifier);
+        dataHandler.delete(MedicalRecord.class, medicalRecordToDelete);
     }
 }

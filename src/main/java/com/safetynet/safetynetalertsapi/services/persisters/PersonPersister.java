@@ -37,7 +37,7 @@ public class PersonPersister {
             return responsePerson;
     }
 
-    public void deletePerson(String identity) throws ResourceNotFoundException, RuntimeException {
-        repository.delete(identity);
+    public void deletePerson(String lastName, String firstName) throws ResourceNotFoundException, RuntimeException {
+        repository.delete(lastName, firstName);
     }
 }
