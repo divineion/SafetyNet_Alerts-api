@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class PersonRepository {
+public class PersonRepository implements BaseRepository<Person> {
 
     public final Logger logger = LogManager.getLogger();
     @Autowired

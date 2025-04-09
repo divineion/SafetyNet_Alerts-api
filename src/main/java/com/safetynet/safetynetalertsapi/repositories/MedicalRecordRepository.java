@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class MedicalRecordRepository {
+public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
 
     private final Logger logger = LogManager.getLogger(MedicalRecordRepository.class);
 
@@ -35,20 +35,11 @@ public class MedicalRecordRepository {
         return medicalRecord;
     }
 
-    public MedicalRecord update(MedicalRecord medicalRecord) throws ResourceNotFoundException, NoChangesDetectedException {
+    public MedicalRecord update(MedicalRecord medicalRecord) throws ResourceNotFoundException {
         List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
 
         if (medicalRecords.stream().noneMatch(record -> record.getIdentity().toString().equalsIgnoreCase(medicalRecord.getIdentity().toString()))) {
             throw new ResourceNotFoundException(String.format("No medical record exists for %s", medicalRecord.getIdentity()));
-        }
-
-        if (medicalRecords.stream().anyMatch(record ->
-                record.getIdentity().equals(medicalRecord.getIdentity()) &&
-                        record.getBirthDate().equals(medicalRecord.getBirthDate()) &&
-                        record.getAllergies().equals(medicalRecord.getAllergies()) &&
-                        record.getMedications().equals(medicalRecord.getMedications())
-        )) {
-            throw new NoChangesDetectedException("The medical record data is identical to the existing record. No changes are required");
         }
 
         dataHandler.update(medicalRecord);
