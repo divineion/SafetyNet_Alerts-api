@@ -107,18 +107,17 @@ public class PersonController {
 		}
 	}
 
-	@DeleteMapping("/person/{identity}")
-	public HttpEntity<?> deletePerson(@PathVariable String identity) {
+	@DeleteMapping("/person/{lastName}/{firstName}")
+	public HttpEntity<?> deletePerson(@PathVariable String lastName, @PathVariable String firstName) {
+		String fullName = lastName + " " + firstName;
+		logger.debug("Attempting to delete {} {} from the database.", lastName, firstName);
 		try {
-			persister.deletePerson(identity);
-			logger.info("Person named {} has been successfully deleted", identity);
+			persister.deletePerson(lastName, firstName);
+			logger.info("Person named {} {} has been successfully deleted", firstName, lastName);
 			return ResponseEntity.noContent().build();
 		} catch(ResourceNotFoundException e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(404).build();
-		} catch (RuntimeException e) {
-            logger.error("An error occurred while deleting the resource");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
-        }
+		}
     }
 }
