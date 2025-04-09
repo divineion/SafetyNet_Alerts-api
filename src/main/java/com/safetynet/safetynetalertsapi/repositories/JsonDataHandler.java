@@ -24,9 +24,6 @@ public class JsonDataHandler implements DataHandler {
 
     private final Logger logger = LogManager.getLogger(JsonDataHandler.class);
 
-    //			//Java 8 date/time type `java.time.LocalDate` not supported by default
-    //https://www.javacodegeeks.com/jackson-java-8-date-time-localdate-support-issues.html
-    //configure ObjectMapper
     private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).enable(SerializationFeature.INDENT_OUTPUT);
 
     @Autowired
@@ -135,54 +132,27 @@ public class JsonDataHandler implements DataHandler {
         }
     }
 
-    public <T> void delete(Class<T> type, String uniqueIdentifier) {
+    public <T> void delete(T type, T entity) {
         try {
             DataSet existingData = mapper.readValue(file, DataSet.class);
 
             if (type.equals(Person.class)) {
                 List<Person> persons = existingData.getPersons();
-
-                //chercher la personne dans la liste
-                for (int i = 0; i < persons.size(); i++) {
-                    Person personToDelete = persons.get(i);
-
-                    //si la personne est trouvée, on la supprime
-                    if (formatter.normalizeString(uniqueIdentifier).equals(formatter.normalizeString(personToDelete.getIdentity().toString()))) {
-                        persons.remove(personToDelete);
-                        break;
-                    }
-                }
+                persons.remove((Person) entity);
                 existingData.setPersons(persons);
             }
 
             if (type.equals(FireStation.class)) {
                 List<FireStation> fireStations = existingData.getFireStations();
-
-                for (int i = 0; i < fireStations.size(); i++) {
-                    FireStation fireStationToDelete = fireStations.get(i);
-
-                    if (formatter.normalizeString(uniqueIdentifier).equals(formatter.normalizeString(fireStationToDelete.toString()))) {
-                        fireStations.remove(fireStationToDelete);
-                        break;
-                    }
-                }
+                fireStations.remove((FireStation) entity);
                 existingData.setFireStations(fireStations);
             }
 
             if (type.equals(MedicalRecord.class)) {
                 List<MedicalRecord> medicalRecords = existingData.getMedicalRecords();
-
-                for (int i = 0; i < medicalRecords.size(); i++) {
-                    MedicalRecord medicalRecordToDelete = medicalRecords.get(i);
-
-                    if (formatter.normalizeString(uniqueIdentifier).equals(formatter.normalizeString(medicalRecordToDelete.getIdentity().toString()))) {
-                        medicalRecords.remove(medicalRecordToDelete);
-                        break;
-                    }
-                }
+                medicalRecords.remove((MedicalRecord) entity);
                 existingData.setMedicalRecords(medicalRecords);
             }
-
             mapper.writeValue(file, existingData);
         } catch (IOException e) {
             logger.error(e.getMessage());

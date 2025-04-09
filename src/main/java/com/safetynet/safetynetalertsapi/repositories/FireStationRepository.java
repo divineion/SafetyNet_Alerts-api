@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Repository
-public class FireStationRepository {
+public class FireStationRepository implements BaseRepository<FireStation> {
     public final Logger logger = LogManager.getLogger(FireStationRepository.class);
 
     @Autowired
@@ -22,12 +22,11 @@ public class FireStationRepository {
     @Autowired
     StringFormatter formatter;
 
-    public FireStation save(FireStation fireStation) throws ResourceAlreadyExistsException, IOException {
+    public FireStation save(FireStation fireStation) throws ResourceAlreadyExistsException {
         List<FireStation> fireStations = dataHandler.findAllFireStations();
 
         if (fireStations.stream().anyMatch(fs -> {
             boolean match = fs.equals(fireStation);
-            System.out.println("Comparing: " + fs + " with " + fireStation + " => " + match);
 
             return match;
         })) {
@@ -38,29 +37,28 @@ public class FireStationRepository {
         return fireStation;
     }
 
-    public void delete(String identifier) throws ResourceNotFoundException, RuntimeException {
+    public void delete(String address, String stationNumber) throws ResourceNotFoundException {
         List<FireStation> fireStations = dataHandler.findAllFireStations();
+        String identifier = address.concat(stationNumber);
 
-        if (fireStations.stream().noneMatch(fs -> {
-            return formatter.normalizeString(fs.toString()).equals(identifier);
-        })) {
-            throw new ResourceNotFoundException("The station with the provided address and station number is not found.");
-        }
-        dataHandler.delete(FireStation.class, identifier);
+        FireStation fireStationToDelete = fireStations
+                .stream()
+                .filter(fs -> formatter.normalizeString(fs.toString()).equals(identifier))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("The station with the provided address and station number is not found."));
+
+        dataHandler.delete(FireStation.class, fireStationToDelete);
     }
 
-    public FireStation update(FireStation fireStation, String address) throws ResourceNotFoundException, InvalidAddressException {
-        if (!formatter.normalizeString(fireStation.getAddress()).equals(formatter.normalizeString(address))) {
-            throw new InvalidAddressException("The provided address in the request does not match the fire station address.");
-        }
 
+    public FireStation update(FireStation fireStation) throws ResourceNotFoundException {
         List<FireStation> fireStations = dataHandler.findAllFireStations();
 
-        if (fireStations.stream().noneMatch(fs -> {
-            return (formatter.normalizeString(fs.getAddress()).equals(formatter.normalizeString(address)));
-        })) {
-            throw new ResourceNotFoundException("No station exists for the provided address.");
-        }
+        fireStations
+                .stream()
+                .filter(fs -> fs.getAddress().equals(fireStation.getAddress()))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("No resource was found for the provided address"));
 
         dataHandler.update(fireStation);
 

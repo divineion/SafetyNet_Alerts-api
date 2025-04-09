@@ -27,7 +27,7 @@ import com.safetynet.safetynetalertsapi.model.dto.FloodAlertDTO;
 @RestController
 public class FireStationController {
 
-    private Logger logger = LogManager.getLogger(FireStationController.class);
+    private final Logger logger = LogManager.getLogger(FireStationController.class);
 
     @Autowired
     private FireStationFinder finder;
@@ -97,12 +97,11 @@ public class FireStationController {
     /**
      * Update - Update a {@link FireStation}
      *
-     * @param address       - The address associated to the station
-     * @param stationNumber - The station number associated to the given
+     * @param address - The address associated to a station
      * @return a {@link FireStationDTO}
      */
-    @PutMapping("/firestation/{stationNumber}/{address}")
-    public ResponseEntity<FireStationDTO> updateFireStation(@PathVariable String stationNumber, @PathVariable String address, @RequestBody FireStationDTO fireStationDTO) {
+    @PutMapping("/firestation/{address}")
+    public ResponseEntity<FireStationDTO> updateFireStation(@PathVariable String address, @RequestBody FireStationDTO fireStationDTO) {
         try {
             FireStationDTO updatedFireStation = persister.updateFireStation(fireStationDTO, address);
             return ResponseEntity.ok(updatedFireStation);
@@ -124,8 +123,7 @@ public class FireStationController {
     @DeleteMapping("/firestation/{stationNumber}/{address}")
     public HttpEntity<?> deleteFireStation(@PathVariable String address, @PathVariable String stationNumber) {
         try {
-            String identifier = formatter.normalizeString(address + stationNumber);
-            persister.deleteFireStation(identifier);
+            persister.deleteFireStation(address, stationNumber);
             logger.info("The relation between the firestation {} and the address {} has been removed", stationNumber, address);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {

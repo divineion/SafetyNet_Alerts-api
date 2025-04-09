@@ -7,6 +7,7 @@ import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
 import com.safetynet.safetynetalertsapi.repositories.InvalidAddressException;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
+import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,30 +26,28 @@ public class FireStationPersister {
     @Autowired
     FireStationMapper mapper;
 
+    @Autowired
+    FireStationValidator validator;
+
 
     public FireStationDTO saveFireStation(FireStationDTO fireStationDTO) throws ResourceAlreadyExistsException {
         FireStation fireStation = mapper.fromFireStationDtoToFireStation(fireStationDTO);
-        try {
-            FireStation savedFireStation = repository.save(fireStation);
+        FireStation savedFireStation = repository.save(fireStation);
+        FireStationDTO responseDtoFireStation = mapper.fromFireStationToFireStationDTO(savedFireStation);
 
-            FireStationDTO responseDtoFireStation = mapper.fromFireStationToFireStationDTO(savedFireStation);
-
-            return responseDtoFireStation;
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-
-            throw new RuntimeException();
-        }
+        return responseDtoFireStation;
     }
 
-    public void deleteFireStation(String identifier) throws ResourceNotFoundException, RuntimeException {
-        repository.delete(identifier);
+    public void deleteFireStation(String address, String stationNumber) throws ResourceNotFoundException, RuntimeException {
+        repository.delete(address, stationNumber);
     }
 
     public FireStationDTO updateFireStation(FireStationDTO fireStationDTO, String address) throws ResourceNotFoundException, InvalidAddressException {
         FireStation fireStation = mapper.fromFireStationDtoToFireStation(fireStationDTO);
 
-        FireStation updatedFireStation = repository.update(fireStation, address);
+        validator.validateFireStationAddressAssociation(fireStation, address);
+
+        FireStation updatedFireStation = repository.update(fireStation);
 
         FireStationDTO responseFireStation = mapper.fromFireStationToFireStationDTO(updatedFireStation);
 
