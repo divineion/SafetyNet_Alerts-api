@@ -1,6 +1,6 @@
 package com.safetynet.safetynetalertsapi.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
 
 public class Address {
 	private String address;
@@ -43,5 +43,15 @@ public class Address {
 	
 	public String toString() {
 		return this.address + " " + this.city + " " + this.zip;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Address address1 = (Address) o;
+		return Objects.equals(address, address1.address) &&
+				Objects.equals(city, address1.city) &&
+				Objects.equals(zip, address1.zip);
 	}
 }

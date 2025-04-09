@@ -2,6 +2,7 @@ package com.safetynet.safetynetalertsapi.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -74,5 +75,22 @@ public class MedicalRecord implements Identifiable {
     @Override
     public String toString() {
         return this.identity.toString() + this.birthDate + this.allergies + this.medications;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        //Objects.equals() pour effectuer une comparaison valeur par valeur
+        MedicalRecord that = (MedicalRecord) o;
+        return Objects.equals(identity, that.identity)
+                && Objects.equals(birthDate, that.birthDate)
+                && Objects.equals(allergies, that.allergies)
+                && Objects.equals(medications, that.medications);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(identity, birthDate, allergies, medications);
     }
 }

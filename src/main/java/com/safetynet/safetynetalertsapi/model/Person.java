@@ -4,6 +4,8 @@ package com.safetynet.safetynetalertsapi.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
+import java.util.Objects;
+
 /**
  * This class represents a person in the SafetyNet Alerts system.
  * It contains the personal information of individuals.
@@ -66,7 +68,26 @@ public class Person implements Identifiable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Person person = (Person) o;
+
+		return (Objects.equals(identity, person.identity) &&
+				Objects.equals(address, person.address) &&
+				Objects.equals(phone, person.phone) &&
+				Objects.equals(email, person.email)
+		);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(identity);
+	}
+
 	@Override
 	public String toString() {
 		return this.identity
