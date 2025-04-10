@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
-import com.safetynet.safetynetalertsapi.repositories.InvalidAddressException;
+import com.safetynet.safetynetalertsapi.exceptions.InvalidAddressException;
 import com.safetynet.safetynetalertsapi.services.persisters.FireStationPersister;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
@@ -105,12 +105,9 @@ public class FireStationController {
         try {
             FireStationDTO updatedFireStation = persister.updateFireStation(fireStationDTO, address);
             return ResponseEntity.ok(updatedFireStation);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException | InvalidAddressException e) {
             logger.error(e.getMessage());
-            return ResponseEntity.status(404).build();
-        } catch (InvalidAddressException e) {
-            logger.error(e.getMessage());
-			return ResponseEntity.status(400).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -129,8 +126,6 @@ public class FireStationController {
         } catch (ResourceNotFoundException e) {
             logger.error("The specified address {} and station number {} are not associated.", address, stationNumber);
             return ResponseEntity.status(404).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error");
         }
     }
 }
