@@ -5,15 +5,13 @@ import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
 import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
-import com.safetynet.safetynetalertsapi.repositories.InvalidAddressException;
+import com.safetynet.safetynetalertsapi.exceptions.InvalidAddressException;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
 import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 @Service
 public class FireStationPersister {

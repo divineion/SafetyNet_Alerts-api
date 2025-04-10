@@ -97,10 +97,31 @@ public class PersonControllerTest {
     public void testUpdatePerson() throws Exception {
         String json = "{\"firstName\": \"Allison\",\"lastName\": \"Boyd\",\"address\": \"112 Steppes Pl\",\"city\": \"Culver\",\"zip\": \"97451\",\"phone\": \"666-999-6666\",\"email\": \"aly@imail.com\"}";
 
-        mockMvc.perform(put("/person/BoydAllison")
+        mockMvc.perform(put("/person/Boyd/Allison")
                 .contentType(CONTENT_TYPE)
                 .content(json))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdatePersonShouldFailWhenIdentityMismatch() throws Exception {
+        String json = "{\"firstName\": \"John\", \"lastName\": \"Boyd\", \"address\": \"1509 Culver St\", \"city\": \"Culver\", \"zip\": \"97451\", \"phone\": \"00000-874-6512\",\"email\": \"jaboyd@email.com\"}";
+
+        mockMvc.perform(put("/person/Boyde/john")
+                    .contentType(CONTENT_TYPE)
+                    .content(json)
+                )
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testUpdatePersonShouldFailWhenIdentityNotFound() throws Exception {
+        String json = "{\"firstName\": \"Mickael\", \"lastName\": \"Boyd\", \"address\": \"1509 Culver St\", \"city\": \"Culver\", \"zip\": \"97451\", \"phone\": \"00000-874-6512\",\"email\": \"jaboyd@email.com\"}";
+
+        mockMvc.perform(put("/person/boyd/mickael")
+                .contentType(CONTENT_TYPE)
+                .content(json))
+                .andExpect(status().isNotFound());
     }
 
     @Test

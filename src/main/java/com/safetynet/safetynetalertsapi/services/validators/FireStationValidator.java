@@ -2,7 +2,7 @@ package com.safetynet.safetynetalertsapi.services.validators;
 
 import java.util.List;
 
-import com.safetynet.safetynetalertsapi.repositories.InvalidAddressException;
+import com.safetynet.safetynetalertsapi.exceptions.InvalidAddressException;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,4 +40,5 @@ public class FireStationValidator {
 			throw new InvalidAddressException("The provided address in the request URL does not match the provided fire station address.");
 		}
 	}
+
 }

@@ -2,6 +2,7 @@ package com.safetynet.safetynetalertsapi.controllers;
 
 import java.util.List;
 
+import com.safetynet.safetynetalertsapi.exceptions.IdentityMismatchException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
@@ -96,16 +97,19 @@ public class PersonController {
 		}
     }
 
-	@PutMapping("/person/{identity}")
-	public ResponseEntity<PersonDTO> updatePerson(@PathVariable String identity, @RequestBody PersonDTO personDto) {
+	@PutMapping("/person/{lastName}/{firstName}")
+	public ResponseEntity<PersonDTO> updatePerson(@PathVariable String lastName, @PathVariable String firstName, @RequestBody PersonDTO personDto) {
 		try {
-			PersonDTO updatedPersonDto = persister.updatePerson(personDto);
+			PersonDTO updatedPersonDto = persister.updatePerson(personDto, lastName, firstName);
 			return ResponseEntity.status(200).body(updatedPersonDto);
 		} catch(ResourceNotFoundException e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(404).build();
-		}
-	}
+		} catch (IdentityMismatchException e) {
+           logger.error(e.getMessage());
+		   return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+    }
 
 	@DeleteMapping("/person/{lastName}/{firstName}")
 	public HttpEntity<?> deletePerson(@PathVariable String lastName, @PathVariable String firstName) {
