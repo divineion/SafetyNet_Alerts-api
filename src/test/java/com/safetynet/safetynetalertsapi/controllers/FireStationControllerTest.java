@@ -101,6 +101,12 @@ public class FireStationControllerTest {
                 .andExpect(jsonPath("$[0]", matchesPattern(PHONE_PATTERN)));
     }
 
+    @Test
+    public void getCoveredPhoneShouldFailWithUnkownStationNumber() throws Exception {
+        mockMvc.perform(get("/phonealert/555"))
+                .andExpect(status().isNotFound());
+    }
+
     //Cette url doit retourner la liste des habitants vivant à l’adresse donnée ainsi que le
     //numéro de la caserne de pompiers la desservant. La liste doit inclure le nom, le
     //numéro de téléphone, l'âge et les antécédents médicaux (médicaments, posologie et
@@ -164,13 +170,20 @@ public class FireStationControllerTest {
     }
 
     @Test
-    public void testUpdateFireStationShouldFail() throws Exception {
+    public void testUpdateFireStationShouldFailWithAddressMismatch() throws Exception {
         String json = "{\"address\": \"291555th St\", \"station\": 3}";
 
         mockMvc.perform(put("/firestation/1245Str")
                 .contentType(CONTENT_TYPE)
                 .content(json))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateFireStationShouldFailWithUnkownAddress() throws Exception {
+        String json = "{\"address\": \"29 15th St\", \"station\": 3}";
+        mockMvc.perform(put("/firestation/2915thStsss"))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test void testDeleteFireStation() throws Exception {
