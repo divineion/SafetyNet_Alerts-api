@@ -1,12 +1,13 @@
 package com.safetynet.safetynetalertsapi.services.persisters;
 
-import com.safetynet.safetynetalertsapi.exceptions.NoChangesDetectedException;
+import com.safetynet.safetynetalertsapi.exceptions.IdentityMismatchException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
 import com.safetynet.safetynetalertsapi.model.dto.MedicalRecordDTO;
 import com.safetynet.safetynetalertsapi.repositories.MedicalRecordRepository;
 import com.safetynet.safetynetalertsapi.services.mappers.MedicalRecordMapper;
+import com.safetynet.safetynetalertsapi.services.validators.MedicalRecordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class MedicalRecordPersister {
 
     @Autowired
     MedicalRecordMapper mapper;
+
+    @Autowired
+    MedicalRecordValidator validator;
 
     /**
      * @param medicalRecordDTO representing the {@link MedicalRecord} structure
@@ -35,7 +39,8 @@ public class MedicalRecordPersister {
      * @param medicalRecordDTO representing the {@link MedicalRecord} structure
      * @return updatedMedicalRecord the updated {@link MedicalRecordDTO}
      */
-    public MedicalRecordDTO updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) throws ResourceNotFoundException, NoChangesDetectedException {
+    public MedicalRecordDTO updateMedicalRecord(MedicalRecordDTO medicalRecordDTO, String lastName, String firstName) throws ResourceNotFoundException, IdentityMismatchException {
+        validator.validateIdentityMatches(medicalRecordDTO, lastName, firstName);
         MedicalRecord medicalRecord = mapper.fromMedicalRecordDtoToMedicalRecord(medicalRecordDTO);
 
         MedicalRecord updatedMedicalRecord = repository.update(medicalRecord);

@@ -1,6 +1,5 @@
 package com.safetynet.safetynetalertsapi.repositories;
 
-import com.safetynet.safetynetalertsapi.exceptions.NoChangesDetectedException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;

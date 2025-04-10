@@ -1,6 +1,6 @@
 package com.safetynet.safetynetalertsapi.controllers;
 
-import com.safetynet.safetynetalertsapi.exceptions.NoChangesDetectedException;
+import com.safetynet.safetynetalertsapi.exceptions.IdentityMismatchException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
@@ -49,15 +49,15 @@ public class MedicalRecordController {
     public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable String lastName, @PathVariable String firstName, @RequestBody MedicalRecordDTO medicalRecordDTO) {
         logger.debug("Attempting to update the medical record of {}", medicalRecordDTO.getIdentity());
         try {
-            persister.updateMedicalRecord(medicalRecordDTO);
+            persister.updateMedicalRecord(medicalRecordDTO, lastName, firstName);
             logger.info("The medical record of {} {} has been updated.", lastName, firstName);
             return ResponseEntity.ok(medicalRecordDTO);
+        } catch (IdentityMismatchException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         } catch (ResourceNotFoundException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (NoChangesDetectedException e) {
-            logger.info(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
     }
 
