@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.List;
 
 @Repository
@@ -43,7 +42,7 @@ public class FireStationRepository implements BaseRepository<FireStation> {
 
         FireStation fireStationToDelete = fireStations
                 .stream()
-                .filter(fs -> formatter.normalizeString(fs.toString()).equals(identifier))
+                .filter(fs -> formatter.normalizeString(fs.toString()).equals(formatter.normalizeString(identifier)))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("The station with the provided address and station number is not found."));
 
