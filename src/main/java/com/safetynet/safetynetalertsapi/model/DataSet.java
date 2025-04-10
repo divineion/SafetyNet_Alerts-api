@@ -1,5 +1,6 @@
 package com.safetynet.safetynetalertsapi.model;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,5 +37,21 @@ public class DataSet {
 
 	public void setMedicalRecords(List<MedicalRecord> medicalRecords) {
 		this.medicalRecords = medicalRecords;
+	}
+
+	public  void sortAll() {
+		fireStations.sort(
+				Comparator.comparing(FireStation::getStation)
+						.thenComparing(FireStation::getAddress)
+		);
+
+		medicalRecords.sort(
+				Comparator.comparing((MedicalRecord record) -> record.getIdentity().getLastName())
+						.thenComparing(record -> record.getIdentity().getFirstName())
+		);
+
+		persons.sort(Comparator.comparing((Person person) -> person.getIdentity().getLastName())
+				.thenComparing(person -> person.getIdentity().getFirstName())
+		);
 	}
 }
