@@ -58,12 +58,14 @@ public class JsonDataSetLoader implements DataSetLoader {
 			
 			DataSet dataSet = objectMapper.readValue(datasetInputStream,
 					DataSet.class);
+
+			dataSet.sortAll();
 			
 			this.setDataSet(dataSet);
 			
 			logger.info("File has been successfully loaded");
 		} catch (Exception e) {
-				logger.error("An error occurred while loading dataset \n" + e);
+            logger.error("An error occurred while loading dataset : \n {}", e.getMessage());
 		}
 	}
 }	

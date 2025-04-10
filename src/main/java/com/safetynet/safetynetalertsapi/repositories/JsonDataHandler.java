@@ -67,6 +67,7 @@ public class JsonDataHandler implements DataHandler {
                 existingData.getMedicalRecords().add((MedicalRecord) resource);
             }
             // réécrire tte la structure mise à jour
+            existingData.sortAll();
             mapper.writeValue(file, existingData);  //
 
         } catch (IOException e) {
@@ -124,7 +125,7 @@ public class JsonDataHandler implements DataHandler {
                 }
                 existingData.setMedicalRecords(medicalRecords);
             }
-
+            existingData.sortAll();
             mapper.writeValue(file, existingData);
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -153,6 +154,7 @@ public class JsonDataHandler implements DataHandler {
                 medicalRecords.remove((MedicalRecord) entity);
                 existingData.setMedicalRecords(medicalRecords);
             }
+            existingData.sortAll();
             mapper.writeValue(file, existingData);
         } catch (IOException e) {
             logger.error(e.getMessage());
