@@ -133,8 +133,8 @@ public class PersonControllerTest {
 
     @Test
     public void testDeletePersonShouldFail() throws Exception {
-        mockMvc.perform(delete("/person/burgess/helen"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/person/delley/helen"))
+        .andExpect(status().isNotFound());
     }
 
 }
