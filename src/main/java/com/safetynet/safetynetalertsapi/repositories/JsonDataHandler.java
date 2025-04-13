@@ -34,86 +34,122 @@ public class JsonDataHandler implements DataHandler {
 
     private static final File file = new File(DataBaseFilePaths.DATABASE_JSON_PATH);
 
+    /**
+     * Sorts all data collections and writes the updated data to the JSON file.
+     * Then reloads the in-memory dataset.
+     *
+     * @param data The {@link DataSet} to sort and write
+     * @throws IOException if writing to file fails
+     */
+    private void sortAndUpdateDataSet(DataSet data) throws IOException {
+        data.sortAll();
+        mapper.writeValue(file, data);
+        dataSetLoader.loadData();
+    }
+
+    /**
+     * Returns the entire dataset loaded in memory.
+     *
+     * @return The full {@link DataSet}
+     */
     public DataSet getAllData() {
         return dataSetLoader.getDataSet();
     }
 
+    /**
+     * Returns the list of all persons.
+     *
+     * @return List of {@link Person} objects
+     */
     public List<Person> findAllPersons() {
         return getAllData().getPersons();
     }
 
+    /**
+     * Returns the list of all fire stations.
+     *
+     * @return List of {@link FireStation} objects
+     */
     public List<FireStation> findAllFireStations() {
         return getAllData().getFireStations();
     }
 
+    /**
+     * Returns the list of all medical records.
+     *
+     * @return List of {@link MedicalRecord} objects
+     */
     public List<MedicalRecord> findAllMedicalRecords() {
         return getAllData().getMedicalRecords();
     }
 
+    /**
+     * Adds a new resource ({@link Person}, {@link FireStation}, or {@link MedicalRecord}) to the dataset,
+     * then sorts and saves the updated data to the JSON file.
+     *
+     * @param resource The object to add
+     */
     public void write(Object resource) {
         try {
-            //représenter la structure complète du fichier
-            DataSet existingData = mapper.readValue(file, DataSet.class);
-            //ajouter les données
+            DataSet data = mapper.readValue(file, DataSet.class);
             if (resource instanceof Person) {
-                existingData.getPersons().add((Person) resource);
+                data.getPersons().add((Person) resource);
             }
 
             if (resource instanceof FireStation) {
-                existingData.getFireStations().add((FireStation) resource);
+                data.getFireStations().add((FireStation) resource);
             }
 
             if (resource instanceof MedicalRecord) {
-                existingData.getMedicalRecords().add((MedicalRecord) resource);
+                data.getMedicalRecords().add((MedicalRecord) resource);
             }
-            // réécrire tte la structure mise à jour
-            existingData.sortAll();
-            mapper.writeValue(file, existingData);  //
+            sortAndUpdateDataSet(data);
 
         } catch (IOException e) {
             logger.error("Failed to write object of type {}: {}", resource.getClass().getSimpleName(), e.getMessage());
         }
     }
 
+    /**
+     * Updates an existing resource in the {@link DataSet} by replacing the matching one.
+     * <p>Uses identity property (or address for fire stations) to find the match.
+     * Then sorts and saves the updated data.</p>
+     *
+     * @param resource The updated object to save
+     */
     public void update(Object resource) {
         try {
-            DataSet existingData = mapper.readValue(file, DataSet.class);
-            // vérifier le type de resource et si OK affecter les propriétés à une nouvelle instance
+            DataSet data = mapper.readValue(file, DataSet.class);
             if (resource instanceof Person newPerson) {
-                //stocker les data en argument
-                List<Person> persons = existingData.getPersons();
+                List<Person> persons = data.getPersons();
 
-                //chercher la personne dans la liste
                 for (int i = 0; i < persons.size(); i++) {
                     Person existingPerson = persons.get(i);
 
-                    //si la personne est trouvée, on la remplace par les prop de la ressource fournie
-                    if (formatter.normalizeString(newPerson.getIdentity().toString()).equals(formatter.normalizeString(persons.get(i).getIdentity().toString()))) {
+                    if (formatter.normalizeString(newPerson.getIdentity().toString()).equals(formatter.normalizeString(existingPerson.getIdentity().toString()))) {
                         persons.set(i, newPerson);
                         break;
                     }
                 }
-                existingData.setPersons(persons);
+                data.setPersons(persons);
             }
 
             if (resource instanceof FireStation newFireStation) {
-                List<FireStation> fireStations = existingData.getFireStations();
+                List<FireStation> fireStations = data.getFireStations();
 
                 for (int i = 0; i < fireStations.size(); i++) {
                     FireStation existingFireStation = fireStations.get(i);
 
                     if (newFireStation.getAddress().equals(existingFireStation.getAddress())) {
-                        System.out.println("firestationdto depuis le handler :  " + newFireStation);
-
                         fireStations.set(i, newFireStation);
                         break;
                     }
                 }
-                existingData.setFireStations(fireStations);
+                data.setFireStations(fireStations);
             }
 
             if (resource instanceof MedicalRecord newMedicalRecord) {
-                List<MedicalRecord> medicalRecords = existingData.getMedicalRecords();
+                List<MedicalRecord> medicalRecords = data.getMedicalRecords();
 
                 for (int i = 0; i < medicalRecords.size(); i++) {
                     MedicalRecord existingMedicalRecord = medicalRecords.get(i);
@@ -123,39 +159,45 @@ public class JsonDataHandler implements DataHandler {
                         break;
                     }
                 }
-                existingData.setMedicalRecords(medicalRecords);
+                data.setMedicalRecords(medicalRecords);
             }
-            existingData.sortAll();
-            mapper.writeValue(file, existingData);
+            sortAndUpdateDataSet(data);
         } catch (IOException e) {
             logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Removes a resource ({@link Person}, {@link FireStation}, or {@link MedicalRecord}) from the dataset.
+     * Then sorts and saves the updated data to the JSON file.
+     *
+     * @param type   The class type of the resource
+     * @param entity The resource object to delete
+     * @param <T>    Generic type for resource
+     */
     public <T> void delete(T type, T entity) {
         try {
-            DataSet existingData = mapper.readValue(file, DataSet.class);
+            DataSet data = mapper.readValue(file, DataSet.class);
 
             if (type.equals(Person.class)) {
-                List<Person> persons = existingData.getPersons();
+                List<Person> persons = data.getPersons();
                 persons.remove((Person) entity);
-                existingData.setPersons(persons);
+                data.setPersons(persons);
             }
 
             if (type.equals(FireStation.class)) {
-                List<FireStation> fireStations = existingData.getFireStations();
+                List<FireStation> fireStations = data.getFireStations();
                 fireStations.remove((FireStation) entity);
-                existingData.setFireStations(fireStations);
+                data.setFireStations(fireStations);
             }
 
             if (type.equals(MedicalRecord.class)) {
-                List<MedicalRecord> medicalRecords = existingData.getMedicalRecords();
+                List<MedicalRecord> medicalRecords = data.getMedicalRecords();
                 medicalRecords.remove((MedicalRecord) entity);
-                existingData.setMedicalRecords(medicalRecords);
+                data.setMedicalRecords(medicalRecords);
             }
-            existingData.sortAll();
-            mapper.writeValue(file, existingData);
+            sortAndUpdateDataSet(data);
         } catch (IOException e) {
             logger.error(e.getMessage());
             throw new RuntimeException(e);
