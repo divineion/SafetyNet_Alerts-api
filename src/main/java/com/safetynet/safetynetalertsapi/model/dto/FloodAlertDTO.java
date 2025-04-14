@@ -1,7 +1,5 @@
 package com.safetynet.safetynetalertsapi.model.dto;
 
-import com.safetynet.safetynetalertsapi.model.Address;
-
 import java.util.List;
 
 public class FloodAlertDTO {

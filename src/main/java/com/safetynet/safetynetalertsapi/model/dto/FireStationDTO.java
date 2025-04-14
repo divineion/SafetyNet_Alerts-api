@@ -43,9 +43,4 @@ public class FireStationDTO {
 		return Objects.equals(address, ((FireStationDTO) object).getAddress()) &&
 				Objects.equals(station, ((FireStationDTO) object).getStation());
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(address, station);
-	}
 }

@@ -82,18 +82,5 @@ public class Person implements Identifiable {
 				Objects.equals(email, person.email)
 		);
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(identity);
-	}
-
-	@Override
-	public String toString() {
-		return this.identity
-		+ " " + this.address 
-		+ " " + this.phone 
-		+ " " + this.email; 
-	}
 }
 

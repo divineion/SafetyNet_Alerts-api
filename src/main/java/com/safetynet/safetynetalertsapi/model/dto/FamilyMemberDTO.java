@@ -7,8 +7,7 @@ import com.safetynet.safetynetalertsapi.model.Identity;
 public class FamilyMemberDTO implements Identifiable {
 	@JsonUnwrapped
 	private Identity identity;
-	
-	
+
 	public FamilyMemberDTO(Identity identity) {
 		this.identity = identity;
 	}
@@ -16,12 +15,8 @@ public class FamilyMemberDTO implements Identifiable {
 	public Identity getIdentity() {
 		return identity;
 	}
+
 	public void setIdentity(Identity identity) {
 		this.identity = identity;
-	}
-	
-	@Override
-	public String toString() {
-		return this.identity.toString();
 	}
 }

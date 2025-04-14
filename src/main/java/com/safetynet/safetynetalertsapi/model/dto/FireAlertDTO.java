@@ -26,9 +26,4 @@ public class FireAlertDTO {
 	public void setResidents(List<AlertPersonInfoDTO> persons) {
 		this.persons = persons;
 	}
-	
-	@Override
-	public String toString() {
-		return this.stationNumber + this.persons.toString();
-	}
 }

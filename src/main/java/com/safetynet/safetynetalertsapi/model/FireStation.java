@@ -60,9 +60,4 @@ public class FireStation {
         return Objects.equals(address, ((FireStation) object).getAddress()) &&
                 Objects.equals(station, ((FireStation) object).getStation());
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(address, station);
-    }
 }

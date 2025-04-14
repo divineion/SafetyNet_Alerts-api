@@ -43,5 +43,4 @@ public class FireStationCoverageDTO {
 	public void setChildrenCounter(int childrenCounter) {
 		this.childrenCounter = childrenCounter;
 	}
-
 }
