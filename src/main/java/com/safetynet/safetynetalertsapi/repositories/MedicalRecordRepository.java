@@ -2,6 +2,7 @@ package com.safetynet.safetynetalertsapi.repositories;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
+import com.safetynet.safetynetalertsapi.model.Identity;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +23,26 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
     @Autowired
     private StringFormatter formatter;
 
+    @Override
+    public List<MedicalRecord> findAll() {
+        return dataHandler.getAllData().getMedicalRecords();
+    }
+
+    public MedicalRecord findByIdentity(Identity identity) throws ResourceNotFoundException {
+        MedicalRecord medicalRecord = findAll()
+                .stream()
+                .filter(r -> r.getIdentity().toString().replace(" ", "").equalsIgnoreCase(identity.toString().replace(" ", "")))
+                .findAny().orElse(null);
+
+        if (findAll().stream().noneMatch(record-> formatter.normalizeString(record.getIdentity().toString()).equals(formatter.normalizeString(identity.toString())))) {
+            throw new ResourceNotFoundException(identity + " is not found in the database");
+        }
+
+        return medicalRecord;
+    }
+
     public MedicalRecord save(MedicalRecord medicalRecord) throws ResourceAlreadyExistsException {
-        List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
+        List<MedicalRecord> medicalRecords = findAll();
 
         if (medicalRecords.stream().anyMatch(record -> formatter.normalizeString(record.getIdentity().toString()).equals(formatter.normalizeString(medicalRecord.getIdentity().toString())))) {
             throw new ResourceAlreadyExistsException(String.format("A medical record exists already for %s", medicalRecord.getIdentity()));
@@ -35,7 +54,7 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
     }
 
     public MedicalRecord update(MedicalRecord medicalRecord) throws ResourceNotFoundException {
-        List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
+        List<MedicalRecord> medicalRecords = findAll();
 
         if (medicalRecords.stream().noneMatch(record -> record.getIdentity().toString().equalsIgnoreCase(medicalRecord.getIdentity().toString()))) {
             throw new ResourceNotFoundException(String.format("No medical record exists for %s", medicalRecord.getIdentity()));
@@ -47,7 +66,7 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
     }
 
     public void delete(String lastName, String firstName) throws ResourceNotFoundException {
-        List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
+        List<MedicalRecord> medicalRecords = findAll();
         String uniqueIdentifier = firstName.concat(lastName);
 
         MedicalRecord medicalRecordToDelete = medicalRecords

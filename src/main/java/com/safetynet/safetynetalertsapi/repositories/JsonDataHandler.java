@@ -20,7 +20,7 @@ import com.safetynet.safetynetalertsapi.model.MedicalRecord;
 import com.safetynet.safetynetalertsapi.model.Person;
 
 @Repository
-public class JsonDataHandler implements DataHandler {
+public class JsonDataHandler {
 
     private final Logger logger = LogManager.getLogger(JsonDataHandler.class);
 
@@ -54,33 +54,6 @@ public class JsonDataHandler implements DataHandler {
      */
     public DataSet getAllData() {
         return dataSetLoader.getDataSet();
-    }
-
-    /**
-     * Returns the list of all persons.
-     *
-     * @return List of {@link Person} objects
-     */
-    public List<Person> findAllPersons() {
-        return getAllData().getPersons();
-    }
-
-    /**
-     * Returns the list of all fire stations.
-     *
-     * @return List of {@link FireStation} objects
-     */
-    public List<FireStation> findAllFireStations() {
-        return getAllData().getFireStations();
-    }
-
-    /**
-     * Returns the list of all medical records.
-     *
-     * @return List of {@link MedicalRecord} objects
-     */
-    public List<MedicalRecord> findAllMedicalRecords() {
-        return getAllData().getMedicalRecords();
     }
 
     /**
