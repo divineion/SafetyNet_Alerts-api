@@ -2,6 +2,8 @@ package com.safetynet.safetynetalertsapi.services.finders;
 
 import java.util.List;
 
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
+import com.safetynet.safetynetalertsapi.repositories.MedicalRecordRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +20,23 @@ public class MedicalRecordFinder {
 
 	@Autowired
     JsonDataHandler dataHandler;
+
+	@Autowired
+	MedicalRecordRepository repository;
 	
-	public List<MedicalRecord> findAll() {
-		List<MedicalRecord> medicalRecords = dataHandler.findAllMedicalRecords();
+	public List<MedicalRecord> getAllMedicalRecords() {
+		List<MedicalRecord> medicalRecords = repository.findAll();
 		
 		return medicalRecords;
 	}
 
 	public MedicalRecord findByIdentity(Identity identity) {
-		logger.debug("Recherche du MedicalRecord pour : " + identity);
-		MedicalRecord record = findAll()
-				.stream()
-				.filter(r -> r.getIdentity().toString().replace(" ", "").equalsIgnoreCase(identity.toString().replace(" ", "")))
-				.findAny().orElse(null);
-		return record;
+        MedicalRecord record = null;
+        try {
+            record = repository.findByIdentity(identity);
+        } catch (ResourceNotFoundException e) {
+            logger.error(e.getMessage());
+        }
+        return record;
 	}
 }

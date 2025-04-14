@@ -5,27 +5,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.safetynet.safetynetalertsapi.model.dto.*;
+import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.util.digester.SystemPropertySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.safetynetalertsapi.exceptions.StationNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
 import com.safetynet.safetynetalertsapi.model.Person;
-import com.safetynet.safetynetalertsapi.repositories.JsonDataHandler;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
 import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class FireStationFinder {
-	@Autowired
-	private JsonDataHandler dataHandler;
-
 	@Autowired
 	private FireStationMapper mapper;
 	
@@ -36,12 +30,15 @@ public class FireStationFinder {
 	private PersonFinder personFinder;
 
 	@Autowired
+	FireStationRepository repository;
+
+	@Autowired
 	private PersonFilterService filterService;
 	
 	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
 
 	public List<FireStationDTO> getAllFireStations() {
-		List<FireStation> fireStations = dataHandler.findAllFireStations();
+		List<FireStation> fireStations = repository.findAll();
 
 		return mapper.fromFireStationsToFireStationsDTO(fireStations);
 	}
@@ -173,27 +170,19 @@ public class FireStationFinder {
 	 * @return a {@link List} containing a list of {@link FloodAlertDTO},
 	 *         each representing an address and its residents to alert in case of flood
 	 */
-	//https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
-	//https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#flatMap-java.util.function.Function-
-	//https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#map-java.util.function.Function-
 	public List<FloodAlertDTO> getFloodAlertInfoByStations(List<Integer> stationNumbers) {
-		// instancier le dto
 		List<FloodAlertDTO> floodAlertDTOList = new ArrayList<>();
 
-		// récupérer les adresses couvertes par les différentes casernes
 		stationNumbers.forEach(stationNumber -> {
 			List<String> coveredAddresses = getFireStationAddressesCoverage(stationNumber)
 					.stream()
 					.toList();
 
-			//créer un floodAlertDTO pour chaque adresse et ajouter les AlertPersonInfoDTO des résidents pour chaque adresse
 			for (String address : coveredAddresses) {
-				//FireAlertDTO contient des AlertPersonInfoDTO que je peux récupérer à partir des adresses
 				FireAlertDTO alertDTO = getFireAlertInfoByAddress(address.replace(" ", "").toLowerCase());
 				List<AlertPersonInfoDTO> persons = alertDTO.getResidents();
 
 				FloodAlertDTO floodAlertDTO = new FloodAlertDTO(address, persons);
-				//ajouter à la liste chaque FloodAlertDTO
 				floodAlertDTOList.add(floodAlertDTO);
 			}
 		});
