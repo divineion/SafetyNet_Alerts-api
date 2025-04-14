@@ -5,6 +5,7 @@ import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,6 @@ public class PersonMapper {
 	}
 
 	public List<PersonInfoDTO> fromPersonsToPersonsInfoDTO(List<Person> persons) {
-		// TODO Auto-generated method stub
 		List<PersonInfoDTO> personInfoDTOList = persons.stream().map(p-> {
 			Identity identity = p.getIdentity();
 			MedicalRecord medicalRecord = recordFinder.findByIdentity(identity);
@@ -52,5 +52,12 @@ public class PersonMapper {
 
 	public Person fromPersonDtoToPerson(PersonDTO persondto) {
 		return new Person(persondto.getIdentity(), persondto.getAddress(), persondto.getPhone(), persondto.getEmail());
+	}
+
+	public ChildDTO fromMemberToChildDto(FamilyMemberDTO child, List<FamilyMemberDTO> houseHoldMembers) {
+		Identity identity = child.getIdentity();
+		MedicalRecord medicalRecord = recordFinder.findByIdentity(identity);
+		int age = Period.between(medicalRecord.getBirthDate(), LocalDate.now()).getYears();
+		return new ChildDTO(identity, age, houseHoldMembers);
 	}
 }
