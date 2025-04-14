@@ -4,8 +4,6 @@ import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsExceptio
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +11,6 @@ import java.util.List;
 
 @Repository
 public class FireStationRepository implements BaseRepository<FireStation> {
-    public final Logger logger = LogManager.getLogger(FireStationRepository.class);
-
     @Autowired
     JsonDataHandler dataHandler;
 
