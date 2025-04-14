@@ -24,10 +24,8 @@ public class PersonMapper {
 	MedicalRecordFinder recordFinder;
 
 	public FamilyMemberDTO fromPersonToFamilyMemberDTO(Person member) {
-		FamilyMemberDTO memberDTO = new FamilyMemberDTO(member.getIdentity());
-		
-		return memberDTO;
-	}
+		return new  FamilyMemberDTO(member.getIdentity());
+    }
 
     public List<PersonInfoDTO> fromPersonsToPersonsInfoDtoList(List<Person> persons) {
         return persons.stream().map(p -> {
