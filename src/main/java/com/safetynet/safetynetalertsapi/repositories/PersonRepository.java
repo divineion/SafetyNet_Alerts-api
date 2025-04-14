@@ -2,7 +2,6 @@ package com.safetynet.safetynetalertsapi.repositories;
 
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
-import com.safetynet.safetynetalertsapi.model.DataSet;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class PersonRepository implements BaseRepository<Person> {
@@ -24,23 +22,18 @@ public class PersonRepository implements BaseRepository<Person> {
     @Autowired
     StringFormatter formatter;
 
+    /**
+     * Retrieves all persons in the data source file.
+     *
+     * @return a list of all {@link Person} instances
+     */
     @Override
     public List<Person> findAll() {
         return dataHandler.getAllData().getPersons();
     }
 
     public List<Person> findByLastName(String lastName) {
-        List<Person> persons = findAll().stream().filter(p -> p.getIdentity().getLastName().equalsIgnoreCase(lastName)).collect(Collectors.toList());
-
-        return persons;
-    }
-
-    public List<Person> findAllPersonsByAddress(String address) {
-
-        return findAll()
-                .stream()
-                .filter(person -> person.getAddress().getAddress().replace(" ", "").equalsIgnoreCase(address))
-                .collect(Collectors.toList());
+        return findAll().stream().filter(p -> p.getIdentity().getLastName().equalsIgnoreCase(lastName)).toList();
     }
 
     public Person save(Person person) throws ResourceAlreadyExistsException {
