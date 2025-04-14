@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.safetynet.safetynetalertsapi.model.DataSet;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonInfoDTO;
@@ -45,7 +44,7 @@ public class PersonController {
 	
 	@GetMapping("/communityemail/{city}")
 	public ResponseEntity<List<String>> getAllEmailByCity(@PathVariable String city) {
-		List<String> data = personFinder.findAllEmail(city);
+		List<String> data = personFinder.findEmailListByCity(city);
 		
 		return ResponseEntity.ok(data);
 	}
