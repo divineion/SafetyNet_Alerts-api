@@ -14,14 +14,17 @@
     	<Root level="DEBUG">
     		<AppenderRef ref="Console"/>
     	</Root>
-    	<Logger name="com.safetynet.safetynetalertsapi.services" additivity="true">
+    	<Logger name="com.safetynet.safetynetalertsapi.services" additivity="false">
     		<AppenderRef ref="REQUESTS_LOG"/>
     	</Logger>
-    	<Logger name="com.safetynet.safetynetalertsapi.repositories" additivity="true">
+    	<Logger name="com.safetynet.safetynetalertsapi.repositories" additivity="false">
     		<AppenderRef ref="REQUESTS_LOG"/>
     	</Logger>
-    	    	<Logger name="com.safetynet.safetynetalertsapi.controllers" additivity="true">
+		<Logger name="com.safetynet.safetynetalertsapi.controllers" additivity="false">
     		<AppenderRef ref="REQUESTS_LOG"/>
     	</Logger>
+		<Logger name="com.safetynet.safetynetalertsapi.config.filters" additivity="false">
+			<AppenderRef ref="REQUESTS_LOG"/>
+		</Logger>
     </Loggers>
 </Configuration>
