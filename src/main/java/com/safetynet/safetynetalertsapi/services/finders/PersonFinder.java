@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.safetynet.safetynetalertsapi.repositories.PersonRepository;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.safetynet.safetynetalertsapi.model.Person;
@@ -31,12 +29,6 @@ import com.safetynet.safetynetalertsapi.services.mappers.PersonMapper;
  */
 @Service
 public class PersonFinder {
-
-	Logger logger = LogManager.getLogger(PersonFinder.class);
-
-	@Autowired
-	private MedicalRecordFinder medicalRecordFinder;
-
 	@Autowired
 	PersonMapper personMapper;
 	
@@ -75,12 +67,14 @@ public class PersonFinder {
 	 * @param city the city to search in
 	 * @return a list of email addresses
 	 */
-	public List<String> findAllEmail(String city) {
+	public List<String> findEmailListByCity(String city) {
 		List<Person> persons = findAll();
 		List<String> emailList = new ArrayList<String>();
 
 		for (Person person : persons) {
-			emailList.add(person.getEmail());
+			if (formatter.normalizeString(person.getAddress().getCity()).equals(formatter.normalizeString(city))) {
+				emailList.add(person.getEmail());
+			}
 		}
 		return emailList;
 	}
