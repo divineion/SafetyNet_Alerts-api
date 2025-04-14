@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.safetynet.safetynetalertsapi.model.DataSet;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonInfoDTO;
@@ -36,49 +35,29 @@ public class PersonController {
 	@Autowired
 	private PersonPersister persister;
 	
-	@GetMapping("/fetchAllData")
-	public ResponseEntity<DataSet> getAllData() {
-		DataSet data = dataHandler.getAllData();
-		
-		return ResponseEntity.ok(data);
-	}
-	
-	@GetMapping("/persons")
-	public ResponseEntity<List<Person>> getAllPersons() {
-			logger.debug("GET request received for /persons endpoint");
-			
-			List<Person> data = personFinder.findAll();
-			
-			logger.info("Data have been fetched successfully");
-			return ResponseEntity.ok(data);		
-	}
-	
 	@GetMapping("/personinfolastname/{lastName}")
 	public ResponseEntity<List<PersonInfoDTO>> getPersonByLastName(@PathVariable String lastName) {
-        logger.debug("Searching for persons named {}", lastName);
-			List<PersonInfoDTO> data = personFinder.findBy(lastName);
+			List<PersonInfoDTO> data = personFinder.findByLastName(lastName);
 			
 			return ResponseEntity.ok(data);
 	}
 	
 	@GetMapping("/communityemail/{city}")
 	public ResponseEntity<List<String>> getAllEmailByCity(@PathVariable String city) {
-        logger.debug("Searching for all email addresses in {}", city);
-		List<String> data = personFinder.findAllEmail(city);
+		List<String> data = personFinder.findEmailListByCity(city);
 		
 		return ResponseEntity.ok(data);
 	}
 	
 	@GetMapping("/childalert/{address}")
 	public ResponseEntity<List<ChildDTO>> getAllChildrenByAddress(@PathVariable String address) {
-        logger.debug("Searching for all children living at {}", address);
 		try {
 			List<ChildDTO> data = personFinder.findAllChildrenByAddress(address.trim());
 			return ResponseEntity.ok(data);
 		} catch(Exception e) {
             logger.error("An error occurred while processing the request{}", e.getMessage());
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -114,10 +93,8 @@ public class PersonController {
 	@DeleteMapping("/person/{lastName}/{firstName}")
 	public HttpEntity<?> deletePerson(@PathVariable String lastName, @PathVariable String firstName) {
 		String fullName = lastName + " " + firstName;
-		logger.debug("Attempting to delete {} {} from the database.", lastName, firstName);
 		try {
 			persister.deletePerson(lastName, firstName);
-			logger.info("Person named {} {} has been successfully deleted", firstName, lastName);
 			return ResponseEntity.noContent().build();
 		} catch(ResourceNotFoundException e) {
 			logger.error(e.getMessage());

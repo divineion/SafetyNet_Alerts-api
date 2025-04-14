@@ -35,7 +35,7 @@ public class Identity {
 
     @Override
     public String toString() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName + this.lastName;
     }
 
     @Override
@@ -44,10 +44,5 @@ public class Identity {
         if (o == null || getClass() != o.getClass()) return false;
         Identity identity = (Identity) o;
         return Objects.equals(firstName, ((Identity) o).getFirstName()) && Objects.equals(lastName, ((Identity) o).getLastName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName);
     }
 }

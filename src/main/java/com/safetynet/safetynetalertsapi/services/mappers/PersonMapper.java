@@ -3,7 +3,6 @@ package com.safetynet.safetynetalertsapi.services.mappers;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.safetynet.safetynetalertsapi.model.dto.ChildDTO;
 import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
@@ -25,26 +24,22 @@ public class PersonMapper {
 	MedicalRecordFinder recordFinder;
 
 	public FamilyMemberDTO fromPersonToFamilyMemberDTO(Person member) {
-		FamilyMemberDTO memberDTO = new FamilyMemberDTO(member.getIdentity());
-		
-		return memberDTO;
-	}
+		return new  FamilyMemberDTO(member.getIdentity());
+    }
 
-	public List<PersonInfoDTO> fromPersonsToPersonsInfoDTO(List<Person> persons) {
-		List<PersonInfoDTO> personInfoDTOList = persons.stream().map(p-> {
-			Identity identity = p.getIdentity();
-			MedicalRecord medicalRecord = recordFinder.findByIdentity(identity);
-			Address address = p.getAddress();
-			int age = Period.between(medicalRecord.getBirthDate(), LocalDate.now()).getYears();
-			String email = p.getEmail();
-			List<String> allergies = medicalRecord.getAllergies();
-			List<String> medications = medicalRecord.getMedications();
-			return new PersonInfoDTO(identity, address, age, email, allergies, medications);
-		}).collect(Collectors.toList());
-		
-		return personInfoDTOList;
-		
-	}
+    public List<PersonInfoDTO> fromPersonsToPersonsInfoDtoList(List<Person> persons) {
+        return persons.stream().map(p -> {
+            Identity identity = p.getIdentity();
+            MedicalRecord medicalRecord = recordFinder.findByIdentity(identity);
+            Address address = p.getAddress();
+            int age = Period.between(medicalRecord.getBirthDate(), LocalDate.now()).getYears();
+            String email = p.getEmail();
+            List<String> allergies = medicalRecord.getAllergies();
+            List<String> medications = medicalRecord.getMedications();
+
+            return new PersonInfoDTO(identity, address, age, email, allergies, medications);
+        }).toList();
+    }
 
 	public PersonDTO fromPersonToPersonDTO(Person person) {
 		return new PersonDTO(person.getIdentity(), person.getAddress(), person.getPhone(), person.getEmail());

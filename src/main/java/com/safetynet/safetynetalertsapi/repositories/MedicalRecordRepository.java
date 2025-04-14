@@ -1,12 +1,11 @@
 package com.safetynet.safetynetalertsapi.repositories;
 
+import com.safetynet.safetynetalertsapi.exceptions.IdentityMismatchException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceAlreadyExistsException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.Identity;
 import com.safetynet.safetynetalertsapi.model.MedicalRecord;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +13,6 @@ import java.util.List;
 
 @Repository
 public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
-
-    private final Logger logger = LogManager.getLogger(MedicalRecordRepository.class);
-
     @Autowired
     private JsonDataHandler dataHandler;
 
@@ -28,11 +24,11 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
         return dataHandler.getAllData().getMedicalRecords();
     }
 
-    public MedicalRecord findByIdentity(Identity identity) throws ResourceNotFoundException {
+    public MedicalRecord findByIdentity(Identity identity) throws ResourceNotFoundException, IdentityMismatchException {
         MedicalRecord medicalRecord = findAll()
                 .stream()
-                .filter(r -> r.getIdentity().toString().replace(" ", "").equalsIgnoreCase(identity.toString().replace(" ", "")))
-                .findAny().orElse(null);
+                .filter(r ->formatter.normalizeString(r.getIdentity().toString()).equalsIgnoreCase(formatter.normalizeString(identity.toString())))
+                .findAny().orElseThrow(() -> new IdentityMismatchException("Identity in the request body does not match the parameters in the URL."));
 
         if (findAll().stream().noneMatch(record-> formatter.normalizeString(record.getIdentity().toString()).equals(formatter.normalizeString(identity.toString())))) {
             throw new ResourceNotFoundException(identity + " is not found in the database");

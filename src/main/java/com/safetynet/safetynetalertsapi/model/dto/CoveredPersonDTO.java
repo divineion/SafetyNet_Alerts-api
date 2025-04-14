@@ -43,8 +43,4 @@ public class CoveredPersonDTO implements Identifiable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	public String toString() {
-		return this.identity.toString() + " " + this.address.getAddress() + " " +  this.phone;
-	}
 }

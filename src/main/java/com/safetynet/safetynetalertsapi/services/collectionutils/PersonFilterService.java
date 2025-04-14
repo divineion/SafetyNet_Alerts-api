@@ -2,10 +2,7 @@ package com.safetynet.safetynetalertsapi.services.collectionutils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +13,6 @@ import com.safetynet.safetynetalertsapi.services.finders.MedicalRecordFinder;
 
 @Service
 public class PersonFilterService {
-
-	private final Logger logger = LogManager.getLogger(PersonFilterService.class);
-
 	@Autowired
 	private MedicalRecordFinder recordFinder;
 	
@@ -49,7 +43,7 @@ public class PersonFilterService {
 			MedicalRecord record = recordFinder.findByIdentity(identity);
 
 			return record != null && record.getBirthDate().isAfter(getLimitDateForChildren());
-		}).collect(Collectors.toList());
+		}).toList();
 	}
 
 	/**

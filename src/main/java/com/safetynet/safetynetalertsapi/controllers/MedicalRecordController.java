@@ -28,7 +28,6 @@ public class MedicalRecordController {
      */
     @PostMapping("/medicalrecord")
     public ResponseEntity<MedicalRecordDTO> createMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
-        logger.debug("Attempting to create a medical record for {}", medicalRecordDTO.getIdentity());
         try {
             persister.createMedicalRecord(medicalRecordDTO);
             return ResponseEntity.ok(medicalRecordDTO);
@@ -47,10 +46,8 @@ public class MedicalRecordController {
      */
     @PutMapping("/medicalrecord/{lastName}/{firstName}")
     public ResponseEntity<MedicalRecordDTO> updateMedicalRecord(@PathVariable String lastName, @PathVariable String firstName, @RequestBody MedicalRecordDTO medicalRecordDTO) {
-        logger.debug("Attempting to update the medical record of {}", medicalRecordDTO.getIdentity());
         try {
             persister.updateMedicalRecord(medicalRecordDTO, lastName, firstName);
-            logger.info("The medical record of {} {} has been updated.", lastName, firstName);
             return ResponseEntity.ok(medicalRecordDTO);
         } catch (IdentityMismatchException e) {
             logger.error(e.getMessage());
@@ -73,10 +70,8 @@ public class MedicalRecordController {
     @DeleteMapping("/medicalrecord/{lastName}/{firstName}")
     public ResponseEntity<Void> deleteMedicalRecord(@PathVariable String lastName, @PathVariable String firstName) {
         String fullName = lastName + " " + firstName;
-        logger.debug("Attempting to delete medical record of {} {}.", lastName, firstName);
         try {
            persister.deleteMedicalRecord(lastName, firstName);
-           logger.info("The medical record of {} {} has been removed.", lastName, firstName);
            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch(ResourceNotFoundException e) {
             logger.error(e.getMessage());

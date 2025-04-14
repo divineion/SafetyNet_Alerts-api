@@ -2,6 +2,7 @@ package com.safetynet.safetynetalertsapi.services.finders;
 
 import java.util.List;
 
+import com.safetynet.safetynetalertsapi.exceptions.IdentityMismatchException;
 import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.repositories.MedicalRecordRepository;
 import org.apache.logging.log4j.LogManager;
@@ -25,18 +26,15 @@ public class MedicalRecordFinder {
 	MedicalRecordRepository repository;
 	
 	public List<MedicalRecord> getAllMedicalRecords() {
-		List<MedicalRecord> medicalRecords = repository.findAll();
-		
-		return medicalRecords;
+		return repository.findAll();
 	}
 
 	public MedicalRecord findByIdentity(Identity identity) {
-        MedicalRecord record = null;
         try {
-            record = repository.findByIdentity(identity);
-        } catch (ResourceNotFoundException e) {
+            return repository.findByIdentity(identity);
+        } catch (ResourceNotFoundException | IdentityMismatchException e) {
             logger.error(e.getMessage());
+			return null;
         }
-        return record;
 	}
 }
