@@ -2,16 +2,17 @@ package com.safetynet.safetynetalertsapi.services.finders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.dto.*;
 import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
+import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.safetynet.safetynetalertsapi.exceptions.StationNotFoundException;
 import com.safetynet.safetynetalertsapi.model.FireStation;
 import com.safetynet.safetynetalertsapi.model.Person;
 import com.safetynet.safetynetalertsapi.services.collectionutils.PersonFilterService;
@@ -34,6 +35,9 @@ public class FireStationFinder {
 
 	@Autowired
 	private PersonFilterService filterService;
+
+	@Autowired
+	private StringFormatter formatter;
 	
 	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
 
@@ -49,17 +53,15 @@ public class FireStationFinder {
 	 * returns a collection of stations, each station can appear multiple times with
 	 * different covered addresses. - Then based on the previous filter process, it
 	 * the retrieves all addresses corresponding to the station number.
-	 * 
-	 * @param stationNumber
-	 * @return a list of addresses
+	 *
+	 * @param stationNumber The fire station number
+	 * @return List a list of addresses
 	 */
 	public List<String> getFireStationAddressesCoverage(int stationNumber) {
 		List<FireStationDTO> fireStations = getAllFireStations().stream()
-				.filter(fireStationDTO -> fireStationDTO.getStation() == stationNumber).collect(Collectors.toList());
+				.filter(fireStationDTO -> fireStationDTO.getStation() == stationNumber).toList();
 
-		List<String> addresses = fireStations.stream().map(f -> f.getAddress()).collect(Collectors.toList());
-
-		return addresses;
+        return fireStations.stream().map(FireStationDTO::getAddress).toList();
 	}
 
 	/**
@@ -69,27 +71,27 @@ public class FireStationFinder {
 	 * addresses in a collection - for each address, retrieves all persons living at
 	 * this address
 	 * 
-	 * @param stationNumber
+	 * @param stationNumber The fire station number
 	 * @return a list of persons covered by a station
 	 */
 	public List<CoveredPersonDTO> getCoveredPersons(int stationNumber) {
 
 		List<String> addresses = getFireStationAddressesCoverage(stationNumber);
-		List<CoveredPersonDTO> coveredPersons = addresses.stream()
-				.flatMap(a -> personFinder.findAllPersonsByAddress(a.toLowerCase().replace(" ", "")).stream())
-				.map(mapper::fromPersonDTOToCoveredPersonDTO).collect(Collectors.toList());
 
-		return coveredPersons;
+        return addresses.stream()
+                .flatMap(address -> personFinder.findAllPersonsByAddress(formatter.normalizeString(address)).stream())
+                .map(mapper::fromPersonDTOToCoveredPersonDTO).toList();
 	}
 
 	/**
-	 * This method: - calls {@link FireStationFinder#getFireStationCoverage(int)} to
-	 * list the persons covered by a station, - uses
-	 * {@link PersonFilterService#filterChildren(List)} to retrieve children, - uses
-	 * count() to count children among them, - uses
-	 * {@link PersonFilterService#countAdults(List)} to count the adults among them.
-	 * 
-	 * @param stationNumber
+	 * This method:
+	 * <li>calls {@link #getCoveredPersons(int)} to
+	 * list the persons covered by a station,</li>
+	 * <li>uses {@link PersonFilterService#filterChildren(List)} to retrieve children,</li>
+	 * <li>uses <code>size()</code> to count children among them,</li>
+	 * <li>uses {@link PersonFilterService#countAdults(List)} to count the adults among them.</li>
+	 *
+	 * @param stationNumber The fire station number
 	 * @return {@link FireStationCoverageDTO} a class composed with a list of
 	 *         persons covered by a station and a count of children and adults
 	 */
@@ -103,29 +105,28 @@ public class FireStationFinder {
 	
 	/**
 	 * Retrieves a list of unique phone numbers for persons covered by the given station.
-	 * 
+	 * <p>
 	 * Steps:
-	 * - Call getCoveredPersons() to retrieve a list of CoveredPersonDTOs.
-	 * - Stream the list and map each person to their phone number.
-	 * - Collect the unique phone and return the results as a {@link List<String>}.
-	 *
-	 * @param stationNumber the fire station number
-	 * @return a {@link List<String>} containing the fire station number and a list of
-	 * unique phone numbers of covered persons
-	 * @throws StationNotFoundException 
+	 * <ul>
+	 * 	<li>Call getCoveredPersons() to retrieve a list of CoveredPersonDTOs.</li>
+	 * 	<li>Stream the list and map each person to their phone number.</li>
+	 * 	<li>Collect the unique phone and return the results as a {@link List<String>}.</li>
+	 * </ul>
+	 *</p>
+	 * @param stationNumber The fire station number
+	 * @return a {@link List<String>} of unique phone numbers
+	 * @throws ResourceNotFoundException if the fire station is not found.
 	 */
-	public List<String> getCoveredPhone(int stationNumber) throws StationNotFoundException {
+	public List<String> getCoveredPhone(int stationNumber) throws ResourceNotFoundException {
 		if (!validator.stationExists(stationNumber)) {
-			throw new StationNotFoundException("Station number " + stationNumber + " not found");
+			throw new ResourceNotFoundException("Station number " + stationNumber + " not found");
 		}
-		List<CoveredPersonDTO> coveredPersons = getCoveredPersons(stationNumber);
-		
-		List<String> coveredPhones = coveredPersons.stream()
-		.map(CoveredPersonDTO::getPhone)
-		.distinct()
-		.collect(Collectors.toList());
-		
-		return coveredPhones;
+
+        return getCoveredPersons(stationNumber)
+				.stream()
+				.map(CoveredPersonDTO::getPhone)
+				.distinct()
+				.toList();
 	}
 
 	/**
@@ -140,18 +141,18 @@ public class FireStationFinder {
 	 * The returned
 	 * list of residents includes their name, phone number, age, medications, and allergies.
 	 *
-	 * @param address an address where a fire alert is triggered
+	 * @param address an address covered by a fire station
 	 * @return a {@link FireAlertDTO} containing the station number and a list of residents
 	 * with their personal and medical information
 	 */
 	public FireAlertDTO getFireAlertInfoByAddress(String address) {
 		List<Person> persons = personFinder.findAllPersonsByAddress(address);
 		
-		int stationNumber = getAllFireStations()
-				.stream()
-				.filter(fs -> fs.getAddress().replace(" ", "").equalsIgnoreCase(address))
-				.findAny()
-				.orElse(null)
+		int stationNumber = Objects.requireNonNull(getAllFireStations()
+                        .stream()
+                        .filter(fs -> formatter.normalizeString(fs.getAddress()).equalsIgnoreCase(formatter.normalizeString(address)))
+                        .findAny()
+                        .orElse(null))
 				.getStation();
 		
 		List<AlertPersonInfoDTO> residents = mapper.fromPersonDTOtoAlertPersonInfoDTO(persons);
@@ -166,7 +167,7 @@ public class FireStationFinder {
 	 * at that address, along with their name, phone number, age, and medical
 	 * information (medications, dosage, and allergies).</p>
 	 *
-	 * @param stationNumbers a list of fire station numbers for which to retrieve flood alert information
+	 * @param stationNumbers a list of fire station numbers
 	 * @return a {@link List} containing a list of {@link FloodAlertDTO},
 	 *         each representing an address and its residents to alert in case of flood
 	 */
@@ -179,8 +180,7 @@ public class FireStationFinder {
 					.toList();
 
 			for (String address : coveredAddresses) {
-				FireAlertDTO alertDTO = getFireAlertInfoByAddress(address.replace(" ", "").toLowerCase());
-				List<AlertPersonInfoDTO> persons = alertDTO.getResidents();
+				List<AlertPersonInfoDTO> persons = getFireAlertInfoByAddress(formatter.normalizeString(address)).getResidents();
 
 				FloodAlertDTO floodAlertDTO = new FloodAlertDTO(address, persons);
 				floodAlertDTOList.add(floodAlertDTO);
