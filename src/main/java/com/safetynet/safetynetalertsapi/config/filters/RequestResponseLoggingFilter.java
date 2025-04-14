@@ -29,11 +29,11 @@ public class RequestResponseLoggingFilter extends HttpFilter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         logger.info(
-                "Request {} {}, from {}", req.getMethod(), req.getRequestURI(), req.getRemoteAddr());
+                "[HTTP REQUEST] {} {}, from {}", req.getMethod(), req.getRequestURI(), req.getRemoteAddr());
         chain.doFilter(request, response);
 
         logger.info(
-                "Response: {}",
+                "[HTTP RESPONSE] {}",
                 res.getStatus());
     }
 }
