@@ -21,8 +21,15 @@ public class FireStationRepository implements BaseRepository<FireStation> {
     @Autowired
     StringFormatter formatter;
 
+    @Override
+    public List<FireStation> findAll() {
+            List<FireStation> fireStations = dataHandler.getAllData().getFireStations();
+
+            return fireStations;
+    }
+
     public FireStation save(FireStation fireStation) throws ResourceAlreadyExistsException {
-        List<FireStation> fireStations = dataHandler.findAllFireStations();
+        List<FireStation> fireStations = findAll();
 
         if (fireStations.stream().anyMatch(fs -> {
             boolean match = fs.equals(fireStation);
@@ -37,7 +44,7 @@ public class FireStationRepository implements BaseRepository<FireStation> {
     }
 
     public void delete(String address, String stationNumber) throws ResourceNotFoundException {
-        List<FireStation> fireStations = dataHandler.findAllFireStations();
+        List<FireStation> fireStations = findAll();
         String identifier = address.concat(stationNumber);
 
         FireStation fireStationToDelete = fireStations
@@ -51,7 +58,7 @@ public class FireStationRepository implements BaseRepository<FireStation> {
 
 
     public FireStation update(FireStation fireStation) throws ResourceNotFoundException {
-        List<FireStation> fireStations = dataHandler.findAllFireStations();
+        List<FireStation> fireStations = findAll();
 
         fireStations
                 .stream()
