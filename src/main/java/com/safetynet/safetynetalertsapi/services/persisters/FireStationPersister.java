@@ -13,6 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**Service responsible for handling persistence operations related to {@link FireStation} entities.
+ * It provides methods to save, update, and delete fire station records while applying validation and mapping logic.
+ */
 @Service
 public class FireStationPersister {
 
@@ -27,7 +30,13 @@ public class FireStationPersister {
     @Autowired
     FireStationValidator validator;
 
-
+    /**
+     * Saves a new {@link FireStation} to the database.
+     *
+     * @param fireStationDTO The DTO containing the fire station information to be saved.
+     * @return The saved fire station as a DTO.
+     * @throws ResourceAlreadyExistsException If a fire station with the same address and station number already exists.
+     */
     public FireStationDTO saveFireStation(FireStationDTO fireStationDTO) throws ResourceAlreadyExistsException {
         FireStation fireStation = mapper.fromFireStationDtoToFireStation(fireStationDTO);
         FireStation savedFireStation = repository.save(fireStation);
@@ -36,10 +45,27 @@ public class FireStationPersister {
         return responseDtoFireStation;
     }
 
-    public void deleteFireStation(String address, String stationNumber) throws ResourceNotFoundException, RuntimeException {
+    /**
+     * Deletes a {@link FireStation} from the database using its address and station number.
+     *
+     * @param address       The address of the fire station to delete.
+     * @param stationNumber The station number associated with the fire station.
+     * @throws ResourceNotFoundException If no fire station is found matching the provided address and station number.
+     * @throws RuntimeException          If an unexpected error occurs during deletion.
+     */
+    public void deleteFireStation(String address, String stationNumber) throws ResourceNotFoundException {
         repository.delete(address, stationNumber);
     }
 
+    /**
+     * Updates an existing {@link FireStation} identified by its address.
+     *
+     * @param fireStationDTO The DTO containing the updated fire station information.
+     * @param address        The address of the fire station to update.
+     * @return The updated fire station as a DTO.
+     * @throws ResourceNotFoundException If no fire station is found for the given address.
+     * @throws InvalidAddressException   If the address in the DTO does not match the provided address.
+     */
     public FireStationDTO updateFireStation(FireStationDTO fireStationDTO, String address) throws ResourceNotFoundException, InvalidAddressException {
         FireStation fireStation = mapper.fromFireStationDtoToFireStation(fireStationDTO);
 
