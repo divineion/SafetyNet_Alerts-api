@@ -3,6 +3,7 @@ package com.safetynet.safetynetalertsapi.services.finders;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.repositories.PersonRepository;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,6 @@ public class PersonFinder {
 
 	@Autowired
 	PersonRepository repository;
-
-	@Autowired
-	StringFormatter formatter;
 
 	/**
 	 * Retrieves all persons in the data source file.
@@ -76,7 +74,7 @@ public class PersonFinder {
 		}
 
 		for (Person person : persons) {
-			if (formatter.normalizeString(person.getAddress().getCity()).equals(formatter.normalizeString(city))) {
+			if (StringFormatter.normalizeString(person.getAddress().getCity()).equals(StringFormatter.normalizeString(city))) {
 				emailList.add(person.getEmail());
 			}
 		}
@@ -89,10 +87,15 @@ public class PersonFinder {
 	 * @param address the street address
 	 * @return a list of {@link Person} living at the given address
 	 */
-	public List<Person> findAllPersonsByAddress(String address) {
+	public List<Person> findAllPersonsByAddress(String address) throws ResourceNotFoundException {
+
+		if (findAll().stream().noneMatch(person -> StringFormatter.normalizeString(person.getAddress().getAddress()).equals(StringFormatter.normalizeString(address)))) {
+			throw new ResourceNotFoundException("Unknown address");
+		}
+
 		return findAll()
 				.stream()
-				.filter(person -> formatter.normalizeString(person.getAddress().getAddress()).equals(formatter.normalizeString(address)))
+				.filter(person -> StringFormatter.normalizeString(person.getAddress().getAddress()).equals(StringFormatter.normalizeString(address)))
 				.toList();	}
 
 	/**

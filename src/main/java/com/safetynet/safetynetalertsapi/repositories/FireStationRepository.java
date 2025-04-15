@@ -14,9 +14,6 @@ public class FireStationRepository implements BaseRepository<FireStation> {
     @Autowired
     JsonDataHandler dataHandler;
 
-    @Autowired
-    StringFormatter formatter;
-
     @Override
     public List<FireStation> findAll() {
             List<FireStation> fireStations = dataHandler.getAllData().getFireStations();
@@ -45,7 +42,7 @@ public class FireStationRepository implements BaseRepository<FireStation> {
 
         FireStation fireStationToDelete = fireStations
                 .stream()
-                .filter(fs -> formatter.normalizeString(fs.toString()).equals(formatter.normalizeString(identifier)))
+                .filter(fs -> StringFormatter.normalizeString(fs.toString()).equals(StringFormatter.normalizeString(identifier)))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("The station with the provided address and station number is not found."));
 

@@ -15,9 +15,6 @@ public class PersonRepository implements BaseRepository<Person> {
     @Autowired
     JsonDataHandler dataHandler;
 
-    @Autowired
-    StringFormatter formatter;
-
     /**
      * Retrieves all persons in the data source file.
      *
@@ -60,11 +57,11 @@ public class PersonRepository implements BaseRepository<Person> {
 
     public void delete(String lastName, String firstName) throws ResourceNotFoundException, RuntimeException {
         List<Person> persons = findAll();
-        String uniqueIdentifier = formatter.normalizeString(firstName.concat(lastName));
+        String uniqueIdentifier = StringFormatter.normalizeString(firstName.concat(lastName));
 
         Person personToDelete = persons
                 .stream()
-                .filter(p -> formatter.normalizeString(p.getIdentity().toString()).equals(uniqueIdentifier))
+                .filter(p -> StringFormatter.normalizeString(p.getIdentity().toString()).equals(uniqueIdentifier))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException(uniqueIdentifier + " is not found in the database"));
 

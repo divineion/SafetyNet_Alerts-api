@@ -15,9 +15,6 @@ public class FireStationValidator {
 	
 	@Autowired
 	JsonDataHandler dataHandler;
-
-	@Autowired
-	StringFormatter formatter;
 	
 	public boolean stationExists(int stationNumber) {
 		List<FireStation> fireStations = dataHandler.getAllData().getFireStations();
@@ -36,7 +33,7 @@ public class FireStationValidator {
 	 * @throws InvalidAddressException
 	 */
 	public void validateFireStationAddressAssociation(FireStation fireStation, String address) throws InvalidAddressException {
-		if (!formatter.normalizeString(address).equals(formatter.normalizeString(fireStation.getAddress()))) {
+		if (!StringFormatter.normalizeString(address).equals(StringFormatter.normalizeString(fireStation.getAddress()))) {
 			throw new InvalidAddressException("The provided address in the request URL does not match the provided fire station address.");
 		}
 	}

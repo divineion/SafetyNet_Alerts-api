@@ -29,9 +29,6 @@ public class JsonDataHandler {
     @Autowired
     private DataSetLoader dataSetLoader;
 
-    @Autowired
-    private StringFormatter formatter;
-
     private static final File file = new File(DataBaseFilePaths.DATABASE_JSON_PATH);
 
     /**
@@ -99,7 +96,7 @@ public class JsonDataHandler {
                 for (int i = 0; i < persons.size(); i++) {
                     Person existingPerson = persons.get(i);
 
-                    if (formatter.normalizeString(newPerson.getIdentity().toString()).equals(formatter.normalizeString(existingPerson.getIdentity().toString()))) {
+                    if (StringFormatter.normalizeString(newPerson.getIdentity().toString()).equals(StringFormatter.normalizeString(existingPerson.getIdentity().toString()))) {
                         persons.set(i, newPerson);
                         break;
                     }
