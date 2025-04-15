@@ -119,10 +119,10 @@ public class FireStationControllerTest {
         mockMvc.perform(get("/fire/1509culverst"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stationNumber").isNumber())
-                .andExpect(jsonPath("$.residents").isArray())
-                .andExpect(jsonPath("$.residents[0].age").isNumber())
-                .andExpect(jsonPath("$.residents[0].allergies").isArray())
-                .andExpect(jsonPath("$.residents[0].medications").isArray());
+                .andExpect(jsonPath("$.persons").isArray())
+                .andExpect(jsonPath("$.persons[0].age").isNumber())
+                .andExpect(jsonPath("$.persons[0].allergies").isArray())
+                .andExpect(jsonPath("$.persons[0].medications").isArray());
     }
 
     /**
@@ -208,7 +208,6 @@ public class FireStationControllerTest {
      */
     @Test
     public void testUpdateFireStationShouldFailWithUnkownAddress() throws Exception {
-        String json = "{\"address\": \"29 15th St\", \"station\": 3}";
         mockMvc.perform(put("/firestation/2915thStsss"))
                 .andExpect(status().is4xxClientError());
     }
@@ -223,8 +222,9 @@ public class FireStationControllerTest {
     }
 
     /**
-     * Test DELETE /firestation/{address} to delete a fire station.
-     *
+     * Test DELETE /firestation/{stationNumber}/{address} to delete a fire station.
+     * <p>Should return 404 Not Found because the given address is not associated
+     * with the given station number.</p>
      */
     @Test void testDeleteFireStationShouldReturnNotFound() throws Exception {
         mockMvc.perform(delete("/firestation/6/maplestreet")
