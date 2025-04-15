@@ -16,15 +16,8 @@ public class FloodAlertDTO {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public List<AlertPersonInfoDTO> getPersons() {
         return persons;
-    }
-
-    public void setPersons(List<AlertPersonInfoDTO> persons) {
-        this.persons = persons;
     }
 }

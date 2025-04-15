@@ -2,7 +2,6 @@ package com.safetynet.safetynetalertsapi.model.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.safetynet.safetynetalertsapi.model.Identifiable;
 import com.safetynet.safetynetalertsapi.model.Identity;
@@ -13,7 +12,6 @@ public class ChildDTO implements Identifiable {
 	
 	private int age;
 	
-	@JsonProperty
 	@JsonUnwrapped
 	private List<FamilyMemberDTO> houseHoldMembers;
 	
@@ -26,25 +24,13 @@ public class ChildDTO implements Identifiable {
 	public Identity getIdentity() {
 		return identity;
 	}
-		
-	public void setIdentity(Identity identity) {
-		this.identity = identity;
-	}
 
 	public int getAge() {
 		return age;
 	}
 	
-	public void setAge(int age) {
-		this.age = age;
-	}
-	
 	public List<FamilyMemberDTO> getHouseHoldMembers() {
 		return houseHoldMembers;
-	}
-	
-	public void setHouseHoldMembers(List<FamilyMemberDTO> houseHoldMembers) {
-		this.houseHoldMembers = houseHoldMembers;
 	}
 	
 	public String toString() {

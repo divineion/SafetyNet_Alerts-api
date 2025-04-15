@@ -15,8 +15,4 @@ public class FamilyMemberDTO implements Identifiable {
 	public Identity getIdentity() {
 		return identity;
 	}
-
-	public void setIdentity(Identity identity) {
-		this.identity = identity;
-	}
 }

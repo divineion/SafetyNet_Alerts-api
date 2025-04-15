@@ -29,32 +29,16 @@ public class PersonDTO implements Identifiable {
 		return identity;
 	}
 	
-	public void setIdentity(Identity identity) {
-		this.identity = identity;
-	}
-	
 	public Address getAddress() {
 		return address;
-	}
-	
-	public void setAddress(Address address) {
-		this.address = address;
 	}
 	
 	public String getPhone() {
 		return phone;
 	}
 	
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	
 	public String getEmail() {
 		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	
 	@Override

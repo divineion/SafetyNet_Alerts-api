@@ -2,6 +2,7 @@ package com.safetynet.safetynetalertsapi.model.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FireStationCoverageDTO {
@@ -13,7 +14,8 @@ public class FireStationCoverageDTO {
 	
 	@JsonProperty("children")
 	long childrenCounter;
-	
+
+	@JsonCreator
 	public FireStationCoverageDTO(List<CoveredPersonDTO> coveredPersonsDTO, long adultsCounter, long children) {
 		this.coveredPersonsDTO = coveredPersonsDTO;
 		this.adultsCounter = adultsCounter;
@@ -24,23 +26,11 @@ public class FireStationCoverageDTO {
 		return coveredPersonsDTO;
 	}
 
-	public void setCoveredPersonsDTO(List<CoveredPersonDTO> coveredPersonsDTO) {
-		this.coveredPersonsDTO = coveredPersonsDTO;
-	}
-
 	public long getAdultsCounter() {
 		return adultsCounter;
 	}
 
-	public void setAdultsCounter(long adultsCounter) {
-		this.adultsCounter = adultsCounter;
-	}
-
 	public long getChildrenCounter() {
 		return childrenCounter;
-	}
-
-	public void setChildrenCounter(int childrenCounter) {
-		this.childrenCounter = childrenCounter;
 	}
 }

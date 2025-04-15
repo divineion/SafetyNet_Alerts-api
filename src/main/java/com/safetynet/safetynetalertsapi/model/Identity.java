@@ -1,7 +1,5 @@
 package com.safetynet.safetynetalertsapi.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class Identity {
@@ -12,7 +10,7 @@ public class Identity {
     public Identity() {
     }
 
-    public Identity(@JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName) {
+    public Identity(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -21,16 +19,8 @@ public class Identity {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     @Override
