@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.safetynet.safetynetalertsapi.exceptions.*;
 import com.safetynet.safetynetalertsapi.services.persisters.FireStationPersister;
-import com.safetynet.safetynetalertsapi.utils.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +31,16 @@ public class FireStationController {
     @Autowired
     private FireStationPersister persister;
 
-    @Autowired
-    StringFormatter formatter;
-
     @GetMapping("/firestation/{stationNumber}")
     public ResponseEntity<FireStationCoverageDTO> getPersonsCoveredByStation(@PathVariable int stationNumber) {
-        FireStationCoverageDTO fireStationcoverage = finder.getFireStationCoverage(stationNumber);
-        return ResponseEntity.ok(fireStationcoverage);
+        FireStationCoverageDTO fireStationcoverage = null;
+        try {
+            fireStationcoverage = finder.getFireStationCoverage(stationNumber);
+            return ResponseEntity.ok(fireStationcoverage);
+        } catch (ResourceNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/phonealert/{stationNumber}")
@@ -55,14 +57,26 @@ public class FireStationController {
 
     @GetMapping("/fire/{address}")
     public ResponseEntity<FireAlertDTO> getFireAlertInfoByAddress(@PathVariable String address) {
-        FireAlertDTO fire = finder.getFireAlertInfoByAddress(address);
-        return ResponseEntity.ok(fire);
+        FireAlertDTO fire = null;
+        try {
+            fire = finder.getFireAlertInfoByAddress(address);
+            return ResponseEntity.ok(fire);
+        } catch (ResourceNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/flood/{stationNumbers}")
     public ResponseEntity<List<FloodAlertDTO>> getFloodAlertInfoByStations(@PathVariable List<Integer> stationNumbers) {
-        List<FloodAlertDTO> personsToAlert = finder.getFloodAlertInfoByStations(stationNumbers);
-        return ResponseEntity.ok(personsToAlert);
+        List<FloodAlertDTO> personsToAlert = null;
+        try {
+            personsToAlert = finder.getFloodAlertInfoByStations(stationNumbers);
+            return ResponseEntity.ok(personsToAlert);
+        } catch (ResourceNotFoundException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**

@@ -56,7 +56,7 @@ public class PersonFinder {
 	 * @param lastName the last name to filter by
 	 * @return a list of {@link PersonInfoDTO} matching the provided last name
 	 */
-	public List<PersonInfoDTO> findByLastName(String lastName) {
+	public List<PersonInfoDTO> findByLastName(String lastName) throws ResourceNotFoundException {
 		List<Person> persons = repository.findByLastName(lastName);
 		return personMapper.fromPersonsToPersonsInfoDtoList(persons);
 	}
@@ -67,9 +67,13 @@ public class PersonFinder {
 	 * @param city the city to search in
 	 * @return a list of email addresses
 	 */
-	public List<String> findEmailListByCity(String city) {
+	public List<String> findEmailListByCity(String city) throws ResourceNotFoundException {
 		List<Person> persons = findAll();
 		List<String> emailList = new ArrayList<String>();
+
+		if (persons.stream().noneMatch(p -> StringFormatter.normalizeString(p.getAddress().getCity()).equals(StringFormatter.normalizeString(city)))) {
+			throw new ResourceNotFoundException("The provided city matches no address among persons' addresses");
+		}
 
 		for (Person person : persons) {
 			if (formatter.normalizeString(person.getAddress().getCity()).equals(formatter.normalizeString(city))) {
@@ -98,7 +102,7 @@ public class PersonFinder {
 	 * @param address the street address
 	 * @return a list of {@link FamilyMemberDTO} representing the household members
 	 */
-	public List<FamilyMemberDTO> findHouseHoldMembersByAddress(String address) {
+	public List<FamilyMemberDTO> findHouseHoldMembersByAddress(String address) throws ResourceNotFoundException {
 		List<Person> members = findAllPersonsByAddress(address);
 		return members.stream().map(personMapper::fromPersonToFamilyMemberDTO).toList();
 	}
@@ -109,7 +113,7 @@ public class PersonFinder {
 	 * @param address an address (street only)
 	 * @return a List of {@link ChildDTO}
 	 */
-	public List<ChildDTO> findAllChildrenByAddress(String address) {
+	public List<ChildDTO> findAllChildrenByAddress(String address) throws ResourceNotFoundException {
 		List<FamilyMemberDTO> houseHoldMembers = findHouseHoldMembersByAddress(address);
 		List<FamilyMemberDTO> childrenList = filterService.filterChildren(houseHoldMembers);
 

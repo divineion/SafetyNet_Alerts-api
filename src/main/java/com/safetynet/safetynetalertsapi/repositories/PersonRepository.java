@@ -28,7 +28,13 @@ public class PersonRepository implements BaseRepository<Person> {
         return dataHandler.getAllData().getPersons();
     }
 
-    public List<Person> findByLastName(String lastName) {
+    public List<Person> findByLastName(String lastName) throws ResourceNotFoundException {
+        if (findAll().stream()
+                .noneMatch(
+                        person -> StringFormatter.normalizeString(person.getIdentity().getLastName())
+                                .equals(StringFormatter.normalizeString(lastName)) )) {
+            throw new ResourceNotFoundException("The provided lastname is not found");
+        }
         return findAll().stream().filter(p -> p.getIdentity().getLastName().equalsIgnoreCase(lastName)).toList();
     }
 
