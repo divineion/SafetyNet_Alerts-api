@@ -54,7 +54,8 @@ public class MedicalRecordControllerTest {
     }
 
     /**
-     * Tests creating a medical record with conflicting data (a medical record with these firstname/lastname exists already in the database).
+     * Tests creating a medical record with conflicting data
+     * (unique identifier firstname/lastname exists already in the database).
      */
     @Test
     public void testCreateMedicalRecordShouldReturnConflict() throws Exception {
@@ -63,6 +64,17 @@ public class MedicalRecordControllerTest {
                     .contentType(CONTENT_TYPE)
                     .content(json)
                 ).andExpect(status().isConflict());
+    }
+    /**
+     * Tests creating a medical record with validation error (invalid firstname).
+     */
+    @Test
+    public void testCreateMedicalRecordValidationShouldFail() throws Exception {
+        String json = "{\"firstName\": \"L\",\"lastName\": \"Cooper\",\"birthdate\": \"03/06/1994\",\"allergies\": [],\"medications\": []}";
+        mockMvc.perform(post("/medicalrecord")
+                .contentType(CONTENT_TYPE)
+                .content(json)
+        ).andExpect(status().isBadRequest());
     }
 
     /**
@@ -86,23 +98,36 @@ public class MedicalRecordControllerTest {
     public void testUpdateMedicalRecordShouldFailWithIdentityMismatch() throws Exception {
         String json = "{\"firstName\": \"Lily\",\"lastName\": \"Cooper\",\"birthdate\": \"03/06/1994\",\"allergies\": [\"illisoxian\"],\"medications\": []}";
 
-        mockMvc.perform(put("//medicalrecord/moore/billy")
+        mockMvc.perform(put("/medicalrecord/moore/billy")
                     .contentType(CONTENT_TYPE)
                     .content(json)
-                ).andExpect(status().is4xxClientError());
+                ).andExpect(status().isUnprocessableEntity());
     }
 
     /**
-     * Tests updating a medical record that matches no identity in the database.
+     * Tests updating a medical record with an invalid firstname.
      */
     @Test
-    public void testUpdateMedicalRecordShouldFailWithUnknownIdentity() throws Exception {
-        String json = "{\"firstName\": \"Lola\",\"lastName\": \"Moore\",\"birthdate\": \"03/06/1994\",\"allergies\": [\"illisoxian\"],\"medications\": []}";
+    public void testUpdateMedicalRecordValidationShouldFailWithInvalidFirstName() throws Exception {
+        String json = "{\"firstName\": \"L\",\"lastName\": \"Moore\",\"birthdate\": \"03/06/1994\",\"allergies\": [\"illisoxian\"],\"medications\": []}";
 
-        mockMvc.perform(put("//medicalrecord/moore/lola")
+        mockMvc.perform(put("/medicalrecord/moore/lily")
                     .contentType(CONTENT_TYPE)
                     .content(json)
-                ).andExpect(status().isNotFound());
+                ).andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Tests updating a medical record with an unknown identity.
+     */
+    @Test
+    public void testUpdateMedicalRecordShouldFailWithUnknownResource() throws Exception {
+        String json = "{\"firstName\": \"Lily\",\"lastName\": \"Moore\",\"birthdate\": \"03/06/1994\",\"allergies\": [\"illisoxian\"],\"medications\": []}";
+
+        mockMvc.perform(put("/medicalrecord/moore/lily")
+                .contentType(CONTENT_TYPE)
+                .content(json)
+        ).andExpect(status().isNotFound());
     }
 
     /**

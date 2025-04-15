@@ -52,6 +52,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!-- Starter for using Java Bean Validation with Hibernate Validator-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -74,8 +79,7 @@
 			    <version>${jacoco-maven-plugin.version}</version>
 			    <executions>
 			    	<execution>
-						<!--preparer l'agent jacoco pr la collecte des donnees de couverture pendant les tests-->
-			    	<id>default-prepare-agent</id>
+						<id>default-prepare-agent</id>
 			    		<goals>
 			    			<goal>prepare-agent</goal>
 			    		</goals>
