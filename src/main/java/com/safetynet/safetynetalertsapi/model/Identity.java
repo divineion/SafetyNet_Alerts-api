@@ -1,16 +1,21 @@
 package com.safetynet.safetynetalertsapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.util.Objects;
 
 public class Identity {
+    @NotNull
+    @Size(min = 2)
     private String firstName;
 
+    @NotNull
+    @Size(min = 2)
     private String lastName;
 
-    public Identity() {
-    }
-
-    public Identity(String firstName, String lastName) {
+    public Identity(@JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }

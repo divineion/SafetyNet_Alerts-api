@@ -70,6 +70,16 @@ public class PersonControllerTest {
     }
 
     /**
+     * Tests retrieving information about persons by last name.
+     * Should fail (lastname not found)
+     */
+    @Test
+    public void testGetPersonByLastNameShouldFailWithNotFound() throws Exception {
+        mockMvc.perform(get("/personinfolastname/boydeee"))
+                .andExpect(status().isNotFound());
+    }
+
+    /**
      * Tests retrieving all emails by city.
      * Verifies if the response contains an array of emails.
      */
@@ -81,6 +91,16 @@ public class PersonControllerTest {
             jsonPath("$").isArray(),
             jsonPath("$[0]", matchesPattern(TestsConstants.EMAIL_PATTERN))
         );
+    }
+
+    /**
+     * Tests retrieving all emails by city.
+     * Verifies if the response contains an array of emails.
+     */
+    @Test
+    public void testGetAllEmailByCityValidationShouldFail() throws Exception {
+        mockMvc.perform(get("/communityemail/culverssss"))
+                .andExpect(status().isNotFound());
     }
 
     /**
@@ -98,6 +118,16 @@ public class PersonControllerTest {
             jsonPath("$.[0].age").isNumber(),
             jsonPath("$.[0].houseHoldMembers").isArray()
         );
+    }
+
+    /**
+     * Tests retrieving all children by address.
+     * Should fail (unknown address)
+     */
+    @Test
+    public void testGetAllChildrenByAddressShouldFailWithNotFound() throws Exception {
+        mockMvc.perform(get("/childalert/1509champselysees"))
+                .andExpect( status().isNotFound() );
     }
 
     /**
@@ -134,6 +164,18 @@ public class PersonControllerTest {
     }
 
     /**
+     * Tests the creation of a new person that should fail (invalid firstname).
+     */
+    @Test
+    public void testCreatePersonValidationShouldFail() throws Exception {
+        String json = "{\"firstName\": \"A\",\"lastName\": \"Boyd\",\"address\": \"112 Steppes Pl\",\"city\": \"Culver\",\"zip\": \"97451\",\"phone\": \"841-874-9888\",\"email\": \"aly@imail.com\"}";
+        mockMvc.perform(post("/person")
+                .contentType(TestsConstants.CONTENT_TYPE)
+                .content(json)
+        ).andExpect(status().isBadRequest());
+    }
+
+    /**
      * Tests updating a person's details and verifies successful update.
      */
     @Test
@@ -144,6 +186,19 @@ public class PersonControllerTest {
                     .contentType(TestsConstants.CONTENT_TYPE)
                     .content(json)
                 ).andExpect(status().isOk());
+    }
+
+    /**
+     * Tests updating a person's details that should fail (invalid firstname).
+     */
+    @Test
+    public void testUpdatePersonValidationShouldFail() throws Exception {
+        String json = "{\"firstName\": \"A\",\"lastName\": \"Boyd\",\"address\": \"112 Steppes Pl\",\"city\": \"Culver\",\"zip\": \"97451\",\"phone\": \"666-999-6666\",\"email\": \"aly@imail.com\"}";
+
+        mockMvc.perform(put("/person/Boyd/Allison")
+                .contentType(TestsConstants.CONTENT_TYPE)
+                .content(json)
+        ).andExpect(status().isBadRequest());
     }
 
     /**
