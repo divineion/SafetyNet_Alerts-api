@@ -15,15 +15,7 @@ public class FireAlertDTO {
 		return stationNumber;
 	}
 	
-	public void setStationNumber(int stationNumber) {
-		this.stationNumber = stationNumber;
-	}
-	
-	public List<AlertPersonInfoDTO> getResidents() {
+	public List<AlertPersonInfoDTO> getPersons() {
 		return persons;
-	}
-	
-	public void setResidents(List<AlertPersonInfoDTO> persons) {
-		this.persons = persons;
 	}
 }

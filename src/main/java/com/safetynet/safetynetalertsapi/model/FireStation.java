@@ -1,7 +1,6 @@
 package com.safetynet.safetynetalertsapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.safetynet.safetynetalertsapi.model.dto.FireStationDTO;
 
 import java.util.Objects;
 
@@ -17,14 +16,9 @@ import java.util.Objects;
  * - station: the identification number of the fire station
  */
 public class FireStation {
-    @JsonProperty("address")
     private String address;
 
-    @JsonProperty("station")
     private int station;
-
-    public FireStation() {
-    }
 
     public FireStation(@JsonProperty("address") String address, @JsonProperty("station") int station) {
         this.address = address;
@@ -35,16 +29,8 @@ public class FireStation {
         return station;
     }
 
-    public void setStation(int station) {
-        this.station = station;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     @Override

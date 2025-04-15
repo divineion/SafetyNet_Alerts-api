@@ -24,16 +24,8 @@ public class CoveredPersonDTO implements Identifiable {
 		return identity;
 	}
 
-	public void setIdentity(Identity identity) {
-		this.identity = identity;
-	}
-
 	public String getAddress() {
 		return address.getAddress();
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
 	}
 
 	public String getPhone() {

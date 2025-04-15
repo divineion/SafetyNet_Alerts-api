@@ -5,42 +5,26 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FireStationCoverageDTO {
-	@JsonProperty("covered persons")
-	private List<CoveredPersonDTO> coveredPersonsDTO;
-	
-	@JsonProperty("adults")
-	long adultsCounter;
-	
-	@JsonProperty("children")
-	long childrenCounter;
-	
-	public FireStationCoverageDTO(List<CoveredPersonDTO> coveredPersonsDTO, long adultsCounter, long children) {
-		this.coveredPersonsDTO = coveredPersonsDTO;
-		this.adultsCounter = adultsCounter;
-		this.childrenCounter = children;
-	}
+    @JsonProperty("covered persons")
+    private List<CoveredPersonDTO> coveredPersonsDTO;
+    long adults;
+    long children;
 
-	public List<CoveredPersonDTO> getCoveredPersonsDTO() {
-		return coveredPersonsDTO;
-	}
+    public FireStationCoverageDTO(List<CoveredPersonDTO> coveredPersonsDTO, long adults, long children) {
+        this.coveredPersonsDTO = coveredPersonsDTO;
+        this.adults = adults;
+        this.children = children;
+    }
 
-	public void setCoveredPersonsDTO(List<CoveredPersonDTO> coveredPersonsDTO) {
-		this.coveredPersonsDTO = coveredPersonsDTO;
-	}
+    public List<CoveredPersonDTO> getCoveredPersonsDTO() {
+        return coveredPersonsDTO;
+    }
 
-	public long getAdultsCounter() {
-		return adultsCounter;
-	}
+    public long getAdults() {
+        return adults;
+    }
 
-	public void setAdultsCounter(long adultsCounter) {
-		this.adultsCounter = adultsCounter;
-	}
-
-	public long getChildrenCounter() {
-		return childrenCounter;
-	}
-
-	public void setChildrenCounter(int childrenCounter) {
-		this.childrenCounter = childrenCounter;
-	}
+    public long getChildren() {
+        return children;
+    }
 }
