@@ -7,10 +7,10 @@ import java.util.Objects;
 /**
  * This class represents a person in the SafetyNet Alerts system.
  * It contains the personal information of individuals.
- * 
+ * <p>
  * The information includes the person's name, address, city, zip code, phone number,
  * and email address. This class is used to store and manage contact details for individuals in the system.
- * 
+ * </p>
  */
 public class Person implements Identifiable {	
 	@JsonUnwrapped

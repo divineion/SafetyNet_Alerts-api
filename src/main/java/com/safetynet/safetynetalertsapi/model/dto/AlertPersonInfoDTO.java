@@ -33,21 +33,12 @@ public class AlertPersonInfoDTO implements Identifiable {
 	public int getAge() {
 		return age;
 	}
-	
-	public void setAge(int age) {
-		this.age = age;
-	}
-	
+
 	public List<String> getAllergies() {
 		return allergies;
 	}
 	
 	public List<String> getMedications() {
 		return medications;
-	}
-
-	@Override
-	public String toString() {
-		return this.getIdentity().toString();
 	}
 }
