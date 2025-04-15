@@ -35,9 +35,6 @@ public class FireStationFinder {
 
 	@Autowired
 	private PersonFilterService filterService;
-
-	@Autowired
-	private StringFormatter formatter;
 	
 	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
 
@@ -74,13 +71,19 @@ public class FireStationFinder {
 	 * @param stationNumber The fire station number
 	 * @return a list of persons covered by a station
 	 */
-	public List<CoveredPersonDTO> getCoveredPersons(int stationNumber) {
+	public List<CoveredPersonDTO> getCoveredPersons(int stationNumber) throws ResourceNotFoundException {
 
 		List<String> addresses = getFireStationAddressesCoverage(stationNumber);
 
-        return addresses.stream()
-                .flatMap(address -> personFinder.findAllPersonsByAddress(formatter.normalizeString(address)).stream())
-                .map(mapper::fromPersonDTOToCoveredPersonDTO).toList();
+        List<CoveredPersonDTO> list = new ArrayList<>();
+        FireStationMapper fireStationMapper = mapper;
+        for (String address : addresses) {
+            for (Person person : personFinder.findAllPersonsByAddress(StringFormatter.normalizeString(address))) {
+                CoveredPersonDTO coveredPersonDTO = fireStationMapper.fromPersonDTOToCoveredPersonDTO(person);
+                list.add(coveredPersonDTO);
+            }
+        }
+        return list;
 	}
 
 	/**
@@ -95,7 +98,7 @@ public class FireStationFinder {
 	 * @return {@link FireStationCoverageDTO} a class composed with a list of
 	 *         persons covered by a station and a count of children and adults
 	 */
-	public FireStationCoverageDTO getFireStationCoverage(int stationNumber) {
+	public FireStationCoverageDTO getFireStationCoverage(int stationNumber) throws ResourceNotFoundException {
 
 		List<CoveredPersonDTO> coveredPersons = getCoveredPersons(stationNumber);
 
@@ -145,12 +148,12 @@ public class FireStationFinder {
 	 * @return a {@link FireAlertDTO} containing the station number and a list of residents
 	 * with their personal and medical information
 	 */
-	public FireAlertDTO getFireAlertInfoByAddress(String address) {
+	public FireAlertDTO getFireAlertInfoByAddress(String address) throws ResourceNotFoundException {
 		List<Person> persons = personFinder.findAllPersonsByAddress(address);
 		
 		int stationNumber = Objects.requireNonNull(getAllFireStations()
                         .stream()
-                        .filter(fs -> formatter.normalizeString(fs.getAddress()).equalsIgnoreCase(formatter.normalizeString(address)))
+                        .filter(fs -> StringFormatter.normalizeString(fs.getAddress()).equalsIgnoreCase(StringFormatter.normalizeString(address)))
                         .findAny()
                         .orElse(null))
 				.getStation();
@@ -171,21 +174,21 @@ public class FireStationFinder {
 	 * @return a {@link List} containing a list of {@link FloodAlertDTO},
 	 *         each representing an address and its residents to alert in case of flood
 	 */
-	public List<FloodAlertDTO> getFloodAlertInfoByStations(List<Integer> stationNumbers) {
+	public List<FloodAlertDTO> getFloodAlertInfoByStations(List<Integer> stationNumbers) throws ResourceNotFoundException {
 		List<FloodAlertDTO> floodAlertDTOList = new ArrayList<>();
 
-		stationNumbers.forEach(stationNumber -> {
-			List<String> coveredAddresses = getFireStationAddressesCoverage(stationNumber)
-					.stream()
-					.toList();
+        for (Integer stationNumber : stationNumbers) {
+            List<String> coveredAddresses = getFireStationAddressesCoverage(stationNumber)
+                    .stream()
+                    .toList();
 
-			for (String address : coveredAddresses) {
-				List<AlertPersonInfoDTO> persons = getFireAlertInfoByAddress(formatter.normalizeString(address)).getResidents();
+            for (String address : coveredAddresses) {
+                List<AlertPersonInfoDTO> persons = getFireAlertInfoByAddress(StringFormatter.normalizeString(address)).getPersons();
 
-				FloodAlertDTO floodAlertDTO = new FloodAlertDTO(address, persons);
-				floodAlertDTOList.add(floodAlertDTO);
-			}
-		});
+                FloodAlertDTO floodAlertDTO = new FloodAlertDTO(address, persons);
+                floodAlertDTOList.add(floodAlertDTO);
+            }
+        }
         return floodAlertDTOList;
     }
 }

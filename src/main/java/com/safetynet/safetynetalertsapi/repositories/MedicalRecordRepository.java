@@ -16,9 +16,6 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
     @Autowired
     private JsonDataHandler dataHandler;
 
-    @Autowired
-    private StringFormatter formatter;
-
     @Override
     public List<MedicalRecord> findAll() {
         return dataHandler.getAllData().getMedicalRecords();
@@ -27,10 +24,10 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
     public MedicalRecord findByIdentity(Identity identity) throws ResourceNotFoundException, IdentityMismatchException {
         MedicalRecord medicalRecord = findAll()
                 .stream()
-                .filter(r ->formatter.normalizeString(r.getIdentity().toString()).equalsIgnoreCase(formatter.normalizeString(identity.toString())))
+                .filter(r ->StringFormatter.normalizeString(r.getIdentity().toString()).equalsIgnoreCase(StringFormatter.normalizeString(identity.toString())))
                 .findAny().orElseThrow(() -> new IdentityMismatchException("Identity in the request body does not match the parameters in the URL."));
 
-        if (findAll().stream().noneMatch(record-> formatter.normalizeString(record.getIdentity().toString()).equals(formatter.normalizeString(identity.toString())))) {
+        if (findAll().stream().noneMatch(record-> StringFormatter.normalizeString(record.getIdentity().toString()).equals(StringFormatter.normalizeString(identity.toString())))) {
             throw new ResourceNotFoundException(identity + " is not found in the database");
         }
 
@@ -40,7 +37,7 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
     public MedicalRecord save(MedicalRecord medicalRecord) throws ResourceAlreadyExistsException {
         List<MedicalRecord> medicalRecords = findAll();
 
-        if (medicalRecords.stream().anyMatch(record -> formatter.normalizeString(record.getIdentity().toString()).equals(formatter.normalizeString(medicalRecord.getIdentity().toString())))) {
+        if (medicalRecords.stream().anyMatch(record -> StringFormatter.normalizeString(record.getIdentity().toString()).equals(StringFormatter.normalizeString(medicalRecord.getIdentity().toString())))) {
             throw new ResourceAlreadyExistsException(String.format("A medical record exists already for %s", medicalRecord.getIdentity()));
         }
 
@@ -67,7 +64,7 @@ public class MedicalRecordRepository implements BaseRepository<MedicalRecord> {
 
         MedicalRecord medicalRecordToDelete = medicalRecords
                 .stream()
-                .filter(record -> formatter.normalizeString(record.getIdentity().toString()).equals(uniqueIdentifier))
+                .filter(record -> StringFormatter.normalizeString(record.getIdentity().toString()).equals(uniqueIdentifier))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("No medical record exists for this identifier"));
 

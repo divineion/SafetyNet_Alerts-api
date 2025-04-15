@@ -15,9 +15,6 @@ public class PersonRepository implements BaseRepository<Person> {
     @Autowired
     JsonDataHandler dataHandler;
 
-    @Autowired
-    StringFormatter formatter;
-
     /**
      * Retrieves all persons in the data source file.
      *
@@ -28,7 +25,13 @@ public class PersonRepository implements BaseRepository<Person> {
         return dataHandler.getAllData().getPersons();
     }
 
-    public List<Person> findByLastName(String lastName) {
+    public List<Person> findByLastName(String lastName) throws ResourceNotFoundException {
+        if (findAll().stream()
+                .noneMatch(
+                        person -> StringFormatter.normalizeString(person.getIdentity().getLastName())
+                                .equals(StringFormatter.normalizeString(lastName)) )) {
+            throw new ResourceNotFoundException("The provided lastname is not found");
+        }
         return findAll().stream().filter(p -> p.getIdentity().getLastName().equalsIgnoreCase(lastName)).toList();
     }
 
@@ -54,11 +57,11 @@ public class PersonRepository implements BaseRepository<Person> {
 
     public void delete(String lastName, String firstName) throws ResourceNotFoundException, RuntimeException {
         List<Person> persons = findAll();
-        String uniqueIdentifier = formatter.normalizeString(firstName.concat(lastName));
+        String uniqueIdentifier = StringFormatter.normalizeString(firstName.concat(lastName));
 
         Person personToDelete = persons
                 .stream()
-                .filter(p -> formatter.normalizeString(p.getIdentity().toString()).equals(uniqueIdentifier))
+                .filter(p -> StringFormatter.normalizeString(p.getIdentity().toString()).equals(uniqueIdentifier))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException(uniqueIdentifier + " is not found in the database"));
 
