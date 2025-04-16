@@ -95,7 +95,6 @@ public class MedicalRecordController {
      */
     @DeleteMapping("/medicalrecord/{lastName}/{firstName}")
     public ResponseEntity<Void> deleteMedicalRecord(@PathVariable String lastName, @PathVariable String firstName) {
-        String fullName = lastName + " " + firstName;
         try {
            persister.deleteMedicalRecord(lastName, firstName);
            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

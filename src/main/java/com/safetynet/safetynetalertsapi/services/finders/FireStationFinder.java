@@ -8,8 +8,6 @@ import com.safetynet.safetynetalertsapi.exceptions.ResourceNotFoundException;
 import com.safetynet.safetynetalertsapi.model.dto.*;
 import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +34,6 @@ public class FireStationFinder {
 	@Autowired
 	private PersonFilterService filterService;
 	
-	private final Logger logger = LogManager.getLogger(FireStationFinder.class);
-
 	public List<FireStationDTO> getAllFireStations() {
 		List<FireStation> fireStations = repository.findAll();
 

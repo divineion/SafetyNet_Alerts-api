@@ -42,7 +42,6 @@ public class FireStation {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || this.getClass() != object.getClass()) return false;
-        FireStation fireStation = (FireStation) object;
         return Objects.equals(address, ((FireStation) object).getAddress()) &&
                 Objects.equals(station, ((FireStation) object).getStation());
     }
