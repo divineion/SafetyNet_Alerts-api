@@ -17,7 +17,11 @@ import java.io.IOException;
 @Component
 @Order(1)
 public class RequestResponseLoggingFilter extends HttpFilter {
-    private static final Logger logger = LogManager.getLogger(RequestResponseLoggingFilter.class);
+    /**
+	 *  default serial version ID
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LogManager.getLogger(RequestResponseLoggingFilter.class);
 
     @Override
     public void doFilter(

@@ -16,7 +16,11 @@ import java.io.IOException;
 @Order(2)
 public class TransactionFilter extends HttpFilter {
 
-    private static final Logger logger = LogManager.getLogger(TransactionFilter.class);
+    /**
+	 *  default serial version ID
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LogManager.getLogger(TransactionFilter.class);
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
