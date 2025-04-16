@@ -8,8 +8,6 @@ import com.safetynet.safetynetalertsapi.repositories.FireStationRepository;
 import com.safetynet.safetynetalertsapi.exceptions.InvalidAddressException;
 import com.safetynet.safetynetalertsapi.services.mappers.FireStationMapper;
 import com.safetynet.safetynetalertsapi.services.validators.FireStationValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +16,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FireStationPersister {
-
-    private final Logger logger = LogManager.getLogger(FireStationPersister.class);
-
     @Autowired
     FireStationRepository repository;
 

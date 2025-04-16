@@ -8,8 +8,6 @@ import com.safetynet.safetynetalertsapi.model.dto.PersonDTO;
 import com.safetynet.safetynetalertsapi.repositories.PersonRepository;
 import com.safetynet.safetynetalertsapi.services.mappers.PersonMapper;
 import com.safetynet.safetynetalertsapi.services.validators.PersonValidator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +22,6 @@ public class PersonPersister {
 
     @Autowired
     private PersonValidator validator;
-
-    private final Logger logger = LogManager.getLogger(PersonPersister.class);
 
     public PersonDTO savePerson(PersonDTO personDto) throws ResourceAlreadyExistsException {
         Person person = mapper.fromPersonDtoToPerson(personDto);

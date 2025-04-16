@@ -124,7 +124,6 @@ public class PersonController {
 
 	@DeleteMapping("/person/{lastName}/{firstName}")
 	public HttpEntity<?> deletePerson(@PathVariable String lastName, @PathVariable String firstName) {
-		String fullName = lastName + " " + firstName;
 		try {
 			persister.deletePerson(lastName, firstName);
 			return ResponseEntity.noContent().build();

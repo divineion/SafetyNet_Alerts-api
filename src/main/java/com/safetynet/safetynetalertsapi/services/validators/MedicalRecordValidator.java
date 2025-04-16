@@ -3,7 +3,6 @@ package com.safetynet.safetynetalertsapi.services.validators;
 import com.safetynet.safetynetalertsapi.exceptions.IdentityMismatchException;
 import com.safetynet.safetynetalertsapi.model.dto.MedicalRecordDTO;
 import com.safetynet.safetynetalertsapi.utils.StringFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
